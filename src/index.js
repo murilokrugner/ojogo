@@ -10,7 +10,7 @@ import {Provider} from 'react-redux'
 import './config/ReactotronConfig';
 import {store, persistor} from './store';
 
-const index: React.FC = () => {
+function index() {
   return (
     <>
       <Provider store={store}>

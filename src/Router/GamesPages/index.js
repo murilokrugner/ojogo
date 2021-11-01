@@ -3,7 +3,7 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import EvenOrOdd from '../../pages/Application/Games/EvenOrOdd';
+import RockPaperScissors from '../../pages/Application/Games/RockPaperScissors';
 
 const Stack = createStackNavigator();
 
@@ -15,9 +15,9 @@ export default function Auth() {
             headerShown: false,
             cardStyle: {backgroundColor: '#fff'},
           }}
-          initialRouteName="EvenOrOdd"        
+          initialRouteName="RockPaperScissors"        
           >
-          <Stack.Screen name="EvenOrOdd" component={EvenOrOdd} 
+          <Stack.Screen name="RockPaperScissors" component={RockPaperScissors} 
             options={{
               headerShown: false,
               headerTitle: '',
