@@ -113,3 +113,27 @@ export const TitleTypeGame = styled.Text`
 
   font-size: 14px;
 `;
+
+
+export const ContainerGame = styled.View`
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  height: 200px;
+  margin-top: 60px;
+`;
+
+export const ContainerMove = styled.View`
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  width: 300px;
+`;
+
+export const TextVs = styled.Text``;
+
+export const TitleStatus = styled.Text`
+  font-size: 16px;
+  font-weight: bold;
+`;
