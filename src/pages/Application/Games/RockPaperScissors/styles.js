@@ -31,10 +31,12 @@ export const Move = styled.TouchableOpacity`
   border-radius: 10px;
 
   padding: 20px;
+
+  width: 100px;
 `;
 
 export const TitleMove = styled.Text`
-  font-size: 18px;
+  font-size: 16px;
   font-family: 'Helvetica';
 
   color: #000;
@@ -80,6 +82,8 @@ export const RoundOne = styled.View`
   background-color: #000;
 
   border-radius: 100px;
+
+  border: 0.3px;
 `;
 
 export const RoundTwo = styled.View`
@@ -88,6 +92,7 @@ export const RoundTwo = styled.View`
   background-color: #000;
 
   border-radius: 100px;
+  border: 0.3px;
 `;
 
 export const RoundTree = styled.View`
@@ -96,6 +101,7 @@ export const RoundTree = styled.View`
   background-color: #000;
 
   border-radius: 100px;
+  border: 0.3px;
 `;
 
 export const ContainerTypeGame = styled.View`
@@ -120,15 +126,15 @@ export const ContainerGame = styled.View`
   justify-content: space-between;
   align-items: center;
   height: 200px;
-  margin-top: 60px;
+
 `;
 
 export const ContainerMove = styled.View`
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 
-  width: 300px;
+  width: 330px;
 `;
 
 export const TextVs = styled.Text``;
@@ -136,4 +142,21 @@ export const TextVs = styled.Text``;
 export const TitleStatus = styled.Text`
   font-size: 16px;
   font-weight: bold;
+`;
+
+export const ContainerBorderMove = styled.View`
+  height: 120px;
+  align-items: center;
+  justify-content: space-between;
+
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+
+  border: ${props => props.move === null ? "0.3px" : "0px"};
+  border-radius: 10px;
+
+  padding: 20px;
+
+  width: 90px;
 `;
