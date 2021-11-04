@@ -8,21 +8,20 @@ import {updateProfileSuccess} from '../user/actions';
 
 export function* signIn({payload}) {
   try {
-    const {company, email, password} = payload;
+    const {email, password} = payload;
 
     const response = yield call(api.post, 'session', {
-      company_name: company,
-      user_name: email,
-      password: password,
+      email,
+      password
     });
 
-    const {token, user, config} = response.data;
+    const {user, token} = response.data;
 
     api.defaults.headers.Authorization = `Bearer ${token}`;
 
     yield put(signInSuccess(token));
 
-    yield put(updateProfileSuccess(user, config));
+    yield put(updateProfileSuccess(user));
   } catch (err) {
     Alert.alert(
       'Falha na autenticação',

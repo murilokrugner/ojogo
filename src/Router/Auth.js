@@ -1,14 +1,7 @@
 import React from 'react';
-import { View, Text } from 'react-native';
 
-// import { Container } from './styles';
+import AuthPages from './AuthPages/';
 
-const SignIn: React.FC = () => {
-  return (
-    <View>
-      <Text>TESTE</Text>
-    </View>
-  );
+export default function Application() {
+  return <AuthPages />;
 }
-
-export default SignIn;

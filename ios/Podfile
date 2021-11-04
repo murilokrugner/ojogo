@@ -16,6 +16,8 @@ target 'ojogo' do
   pod 'lottie-react-native', :path => '../node_modules/lottie-react-native'
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+  pod 'React-RCTText', :path => '../node_modules/react-native/Libraries/Text', :modular_headers => true
+
 
   target 'ojogoTests' do
     inherit! :complete
