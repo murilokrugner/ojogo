@@ -5,6 +5,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import Splash from '../../screens/Splash';
 import RockPaperScissors from '../../pages/Application/Games/RockPaperScissors';
+import Rooms from '../../pages/Application/Games/Rooms';
+import CreateRoom from '../../pages/Application/Games/Rooms/CreateRoom';
 
 const Stack = createStackNavigator();
 
@@ -16,7 +18,7 @@ export default function Auth() {
             headerShown: false,
             cardStyle: {backgroundColor: '#fff'},
           }}
-          initialRouteName="RockPaperScissors"
+          initialRouteName="Rooms"
           >
           <Stack.Screen name="Splash" component={Splash}
             options={{
@@ -27,6 +29,28 @@ export default function Auth() {
             options={{
               headerShown: false,
               headerTitle: '',
+              headerBackTitle: 'Voltar',
+              headerTintColor: '#fff',
+              headerStyle: {
+                backgroundColor: '#002441',
+              }
+            }}
+          />
+          <Stack.Screen name="Rooms" component={Rooms}
+            options={{
+              headerShown: true,
+              headerTitle: 'Salas',
+              headerBackTitle: 'Voltar',
+              headerTintColor: '#fff',
+              headerStyle: {
+                backgroundColor: '#002441',
+              }
+            }}
+          />
+          <Stack.Screen name="CreateRoom" component={CreateRoom}
+            options={{
+              headerShown: true,
+              headerTitle: 'Criar sala',
               headerBackTitle: 'Voltar',
               headerTintColor: '#fff',
               headerStyle: {

@@ -35,7 +35,15 @@ import Line from '../../../../components/Line';
 
 import go from '../../../../assets/animations/go.json';
 
+import io from 'socket.io-client';
+
 const RockPaperScissors = () => {
+  let socket = io('http://localhost:3333');
+
+  socket.on("connect", () => {
+    console.log(socket.id)
+  });
+
   const animationRock = useSharedValue(0);
   const animationPaper = useSharedValue(0);
   const animationPaperX = useSharedValue(0);
