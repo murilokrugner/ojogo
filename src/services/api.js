@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const url = 'http://localhost:3333/';
+const url = 'http://10.0.2.2:3333/';
 
 let headers = {
   'Content-Type': 'application/json',

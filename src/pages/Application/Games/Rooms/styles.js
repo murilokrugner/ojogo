@@ -1,5 +1,15 @@
 import styled from 'styled-components/native';
 
+export const ContainerLoading = styled.View`
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+
+  margin-top: 60px;
+`;
+
 export const Container = styled.View`
   padding: 20px;
   width: 100%;
@@ -25,6 +35,8 @@ export const TitleRoom = styled.Text`
 
   font-weight: bold;
   font-size: 16px;
+
+  color: #000;
 `;
 
 export const Value = styled.Text`
@@ -32,6 +44,8 @@ export const Value = styled.Text`
   margin-top: 10px;
 
   font-size: 14px;
+
+  color: #000;
 `;
 
 export const Owner = styled.Text`
@@ -39,4 +53,6 @@ export const Owner = styled.Text`
   margin-top: 10px;
 
   font-size: 14px;
+
+  color: #000;
 `;

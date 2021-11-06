@@ -7,6 +7,7 @@ import Splash from '../../screens/Splash';
 import RockPaperScissors from '../../pages/Application/Games/RockPaperScissors';
 import Rooms from '../../pages/Application/Games/Rooms';
 import CreateRoom from '../../pages/Application/Games/Rooms/CreateRoom';
+import RoomWaiting from '../../pages/Application/Games/Rooms/RoomWaiting';
 
 const Stack = createStackNavigator();
 
@@ -51,6 +52,17 @@ export default function Auth() {
             options={{
               headerShown: true,
               headerTitle: 'Criar sala',
+              headerBackTitle: 'Voltar',
+              headerTintColor: '#fff',
+              headerStyle: {
+                backgroundColor: '#002441',
+              }
+            }}
+          />
+          <Stack.Screen name="RoomWaiting" component={RoomWaiting}
+            options={{
+              headerShown: false,
+              headerTitle: 'Aguardando...',
               headerBackTitle: 'Voltar',
               headerTintColor: '#fff',
               headerStyle: {

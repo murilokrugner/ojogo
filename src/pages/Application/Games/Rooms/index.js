@@ -1,26 +1,108 @@
-import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import { Alert, StyleSheet, FlatList } from 'react-native';
 
-import { Container, ContainerRooms, TitleRoom, Value, Owner } from './styles';
+import { ContainerLoading, Container, ContainerRooms, TitleRoom, Value, Owner } from './styles';
 
 import { FAB } from 'react-native-paper';
 
+import LottieView from 'lottie-react-native';
+
+import api from '../../../../services/api';
+
+import loadingIcon from '../../../../assets/animations/loading.json';
+
+import {useSelector} from 'react-redux';
+
 const Rooms = ({navigation}) => {
+  const user = useSelector(state => state.user.profile);
+
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState(false);
+
+  async function loadRooms() {
+    try {
+      const response = await api.get('rooms');
+
+      if (response.data.length === 0) {
+        setData(null);
+      } else {
+        setData(response.data);
+      }
+
+      setLoading(false);
+
+    } catch (error) {
+      Alert.alert('Não foi possível carregar os dados, tente novamente mais tarde...')
+      setLoading(false);
+
+    }
+  }
+
+  async function entryRoom(item) {
+    Alert.alert(
+      'Entrar na sala?',
+      `${item.player_owner.nickname} valendo ${item.gamesvalues.value} moedas?`,
+      [
+        {
+          text: 'Não',
+          onPress: () => {
+              return;
+          },
+          style: 'cancel',
+        },
+        {
+          text: 'Sim',
+          onPress: () => {
+            handleSubmit(item)
+          }
+        },
+      ],
+    )
+  }
+
+  async function handleSubmit(item) {
+    console.log(item)
+  }
+
+  useEffect(() => {
+    loadRooms();
+  }, []);
+
   return (
     <>
-      <ScrollView style={{flex: 1}}>
-        <Container>
-          <ContainerRooms>
-            <TitleRoom>
-              Sala: Venha apostar 5 moedas nessa rodada :)
-            </TitleRoom>
-            <Value>
-              Valor da aposta: 5 moedas - taxa de 20%
-            </Value>
-            <Owner>Dono da sala: Matheuzin$2564</Owner>
-          </ContainerRooms>
-        </Container>
-      </ScrollView>
+        {loading ? (
+          <ContainerLoading>
+            <LottieView source={loadingIcon} autoPlay loop={false} style={{width: 200, height: 200}} />
+          </ContainerLoading>
+        ): (
+          <>
+            {data === null ? (
+              <>
+                <TitleRoom>Nenhuma sala encontrada</TitleRoom>
+              </>
+            ) : (
+              <Container>
+                <FlatList
+                  onEndReachedThreshold={0.01}
+                  style={{flex: 1}}
+                  data={data}
+                  renderItem={({item}) => (
+                    <ContainerRooms onPress={() => {entryRoom(item)}}>
+                      <TitleRoom>
+                        Sala: {item.name}
+                      </TitleRoom>
+                      <Value>
+                        Valor da aposta: {item.gamesvalues.value} moedas
+                      </Value>
+                      <Owner>Dono da sala: {item.player_owner.nickname}</Owner>
+                    </ContainerRooms>
+                  )}
+                  keyExtractor={item => item.id}
+                />
+              </Container>
+            )}
+          </>
+        )}
       <FAB
           style={styles.fab}
           large
