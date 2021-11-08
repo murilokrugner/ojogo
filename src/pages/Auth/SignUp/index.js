@@ -10,6 +10,8 @@ import { cpf } from 'cpf-cnpj-validator';
 
 import api from '../../../services/api';
 
+import random from '../../../functions/random';
+
 const SignUp = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
@@ -108,9 +110,11 @@ const SignUp = ({navigation}) => {
     try {
       setLoading(true);
 
+      const nick = nickname + '$' + random(1000, 9999);
+
       const response = await api.post('players', {
         name,
-        nickname,
+        nick,
         email,
         document,
         password_hash: password,

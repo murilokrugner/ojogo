@@ -8,6 +8,7 @@ import RockPaperScissors from '../../pages/Application/Games/RockPaperScissors';
 import Rooms from '../../pages/Application/Games/Rooms';
 import CreateRoom from '../../pages/Application/Games/Rooms/CreateRoom';
 import RoomWaiting from '../../pages/Application/Games/Rooms/RoomWaiting';
+import EntryRoom from '../../pages/Application/Games/Rooms/EntryRoom';
 
 const Stack = createStackNavigator();
 
@@ -63,6 +64,17 @@ export default function Auth() {
             options={{
               headerShown: false,
               headerTitle: 'Aguardando...',
+              headerBackTitle: 'Voltar',
+              headerTintColor: '#fff',
+              headerStyle: {
+                backgroundColor: '#002441',
+              }
+            }}
+          />
+          <Stack.Screen name="EntryRoom" component={EntryRoom}
+            options={{
+              headerShown: true,
+              headerTitle: 'Sala',
               headerBackTitle: 'Voltar',
               headerTintColor: '#fff',
               headerStyle: {
