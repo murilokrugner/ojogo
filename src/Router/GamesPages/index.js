@@ -73,7 +73,7 @@ export default function Auth() {
           />
           <Stack.Screen name="EntryRoom" component={EntryRoom}
             options={{
-              headerShown: true,
+              headerShown: false,
               headerTitle: 'Sala',
               headerBackTitle: 'Voltar',
               headerTintColor: '#fff',

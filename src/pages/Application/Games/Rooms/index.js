@@ -61,11 +61,7 @@ const Rooms = ({navigation}) => {
   }
 
   async function handleSubmit(item) {
-    navigation.navigate('EntryRoom', item);
-
-      Alert.alert('Você entrou na sala');
-
-  /*  try {
+    try {
       await api.put('entry-room', {
         player: user.id,
         id_room: item.id,
@@ -79,7 +75,7 @@ const Rooms = ({navigation}) => {
     } catch (error) {
       Alert.alert('Não foi possível entrar na sala, tente novamente mais tarde');
       return;
-    }*/
+    }
   }
 
   useEffect(() => {

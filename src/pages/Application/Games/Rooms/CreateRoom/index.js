@@ -69,6 +69,7 @@ const CreateRoom = ({navigation}) => {
 
   return (
     <Container>
+
       <TextInput
           label="Nome da sala"
           value={name}

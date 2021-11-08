@@ -23,7 +23,7 @@ import api from '../../../../../services/api';
 import NetInfo from '../../../../../functions/NetInfo';
 
 const EntryRoom = ({route, navigation}) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [information, setInformation] = useState(false);
   const [loadingCanceled, setLoadingCanceled] = useState(false);
   const [canceled, setCanceled] = useState(true);
@@ -82,9 +82,7 @@ const EntryRoom = ({route, navigation}) => {
 
   async function loadRoomInformation() {
     try {
-      setLoading(true);
-
-      await api.get(`room-information?${data.id}`);
+      const response = await api.get(`room-information?id=${data.id}`);
 
       setInformation(response.data);
 
@@ -100,45 +98,48 @@ const EntryRoom = ({route, navigation}) => {
   }
 
   useEffect(() => {
-    if (NetInfo._j === true && data) {
-      loadRoomInformation();
-    }
-  }, [data, NetInfo]);
+    loadRoomInformation();
+  }, []);
 
   return (
     <ScrollView style={{flex: 1}}>
-      <Container>
-        <ContainerInfoRoom>
-          <Name>Nome da sala: {data.name}</Name>
-          <Value>Aposta: {data.value} moedas</Value>
-        </ContainerInfoRoom>
+      {loading ? (
+        <></>
+      ) : (
+        <Container>
+          <ContainerInfoRoom>
+            <Name>Nome da sala: {data.name}</Name>
+            <Value>Aposta: {data.gamesvalues.value} moedas</Value>
+          </ContainerInfoRoom>
 
-        <Line top={20} />
+          <Line top={20} />
 
-        <Title>Jogadores: </Title>
+          <Title>Jogadores: </Title>
 
-        <ContainerPlayers>
-          <Player>
-            <Nickname>Miathuzin$2227</Nickname>
-            <Status>Pronto!</Status>
-          </Player>
+          <ContainerPlayers>
+            <Player>
+              <Nickname>{information[0].player_owner.nickname}</Nickname>
+              <Status>Pronto!</Status>
+            </Player>
 
-          <Line />
+            <Line />
 
-          <Player>
-            <Nickname>Rafs$1611</Nickname>
-            <Status>Em espera...</Status>
-          </Player>
-        </ContainerPlayers>
+            <Player>
+              <Nickname>{information[0].player_punter.nickname}</Nickname>
+              <Status>Em espera...</Status>
+            </Player>
+          </ContainerPlayers>
 
-        <Button mode="contained" onPress={handleSubmit} color="#002441" loading={loading} style={{marginTop: 40}}>
-          JOGAR
-        </Button>
+          <Button mode="contained" onPress={handleSubmit} color="#002441" style={{marginTop: 40}}>
+            JOGAR
+          </Button>
 
-        <Button mode="contained" onPress={askCanceled} color="#000" loading={loadingCanceled} style={{marginTop: 40}}>
-          SAIR DA SALA
-        </Button>
-      </Container>
+          <Button mode="contained" onPress={askCanceled} color="#000" loading={loadingCanceled} style={{marginTop: 40}}>
+            SAIR DA SALA
+          </Button>
+        </Container>
+      )}
+
     </ScrollView>
   );
 }
