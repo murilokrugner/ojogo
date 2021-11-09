@@ -88,16 +88,17 @@ const CreateRoom = ({navigation}) => {
 
         <Picker
           selectedValue={selectedValue}
-          itemStyle={{color: '#000', fontSize: 14, fontWeight: 'bold'}}
+          itemStyle={{color: '#000', fontSize: 14, fontWeight: 'bold', backgroundColor: '#fff'}}
           mode="dropdown"
+          dropdownIconColor={'#000'}
           onValueChange={(itemValue, itemIndex) =>
             setSelectedValue(itemValue)
           }>
-          <Picker.Item label="5 moedas" value="5"  key="5"/>
-          <Picker.Item label="10 moedas" value="10" key="10"/>
-          <Picker.Item label="20 moedas" value="20" key="20"/>
-          <Picker.Item label="50 moedas" value="50" key="50"/>
-          <Picker.Item label="100 moedas" value="100" key="100"/>
+          <Picker.Item label="5 moedas" value="5"  key="5" style={{color: '#000', backgroundColor: '#fff'}}/>
+          <Picker.Item label="10 moedas" value="10" key="10" style={{color: '#000', backgroundColor: '#fff'}}/>
+          <Picker.Item label="20 moedas" value="20" key="20" style={{color: '#000', backgroundColor: '#fff'}}/>
+          <Picker.Item label="50 moedas" value="50" key="50" style={{color: '#000', backgroundColor: '#fff'}}/>
+          <Picker.Item label="100 moedas" value="100" key="100" style={{color: '#000', backgroundColor: '#fff'}}/>
         </Picker>
       </ContainerPicker>
 

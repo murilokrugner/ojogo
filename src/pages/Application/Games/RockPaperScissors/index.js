@@ -38,7 +38,7 @@ import go from '../../../../assets/animations/go.json';
 import io from 'socket.io-client';
 
 const RockPaperScissors = () => {
-  let socket = io('http://10.0.2.2:3333');
+  let socket = io('http://192.168.2.100:3333');
 
   socket.on("connect", () => {
     console.log(socket.id)

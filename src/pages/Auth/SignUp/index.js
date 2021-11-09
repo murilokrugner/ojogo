@@ -114,7 +114,7 @@ const SignUp = ({navigation}) => {
 
       const response = await api.post('players', {
         name,
-        nick,
+        nickname: nick,
         email,
         document,
         password_hash: password,

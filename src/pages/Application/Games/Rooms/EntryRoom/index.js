@@ -25,8 +25,10 @@ import NetInfo from '../../../../../functions/NetInfo';
 const EntryRoom = ({route, navigation}) => {
   const [loading, setLoading] = useState(true);
   const [information, setInformation] = useState(false);
+  const [loadingStart, setLoadingStart] = useState(false);
   const [loadingCanceled, setLoadingCanceled] = useState(false);
   const [canceled, setCanceled] = useState(true);
+  const [status, setStatus] = useState(false);
   const data = route.params;
 
   const [numberRequest, setNumberRequest] = useState(0);
@@ -38,7 +40,22 @@ const EntryRoom = ({route, navigation}) => {
     return false;
   });
 
-  async function handleSubmit() {};
+  async function handleSubmit() {
+    try {
+      setLoadingStart(true);
+
+      const sendStatus = status === false ? true : false;
+
+      await api.put(`room-information?id=${data.id}&status=${sendStatus}`);
+
+      setStatus(status === false ? true : false)
+
+      setLoadingStart(false);
+    } catch (error) {
+      Alert.alert('Não foi possivel dar ok na sala, tente novamente');
+      setLoadingStart(false);
+    }
+  };
 
   async function askCanceled() {
     Alert.alert(
@@ -130,8 +147,8 @@ const EntryRoom = ({route, navigation}) => {
             </Player>
           </ContainerPlayers>
 
-          <Button mode="contained" onPress={handleSubmit} color="#002441" style={{marginTop: 40}}>
-            JOGAR
+          <Button mode="contained" onPress={handleSubmit} color="#002441" style={{marginTop: 40}} loading={loadingStart}>
+            {status ? `CANCELAR PRONTO` : `JOGAR`}
           </Button>
 
           <Button mode="contained" onPress={askCanceled} color="#000" loading={loadingCanceled} style={{marginTop: 40}}>

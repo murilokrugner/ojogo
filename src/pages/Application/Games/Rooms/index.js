@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { Alert, StyleSheet, FlatList } from 'react-native';
-
+import { Alert, StyleSheet, FlatList, Button } from 'react-native';
+import io from 'socket.io-client';
 import { ContainerLoading, Container, ContainerRooms, TitleRoom, Value, Owner } from './styles';
 
 import { FAB } from 'react-native-paper';
@@ -13,11 +13,27 @@ import loadingIcon from '../../../../assets/animations/loading.json';
 
 import {useSelector} from 'react-redux';
 
+import {useDispatch} from 'react-redux';
+import {signOut} from '../../../../store/modules/auth/actions';
+
 const Rooms = ({navigation}) => {
+  let socket = io('http://192.168.2.100:3333');
+
+  const dispatch = useDispatch();
+
+  async function handleSignOut() {
+    dispatch(signOut());
+  }
+
   const user = useSelector(state => state.user.profile);
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(false);
+
+  socket.on('room', room => {
+    setData(false);
+    setData(room);
+  });
 
   async function loadRooms() {
     try {
@@ -113,6 +129,7 @@ const Rooms = ({navigation}) => {
                   )}
                   keyExtractor={item => item.id}
                 />
+                <Button title="SAIR" onPress={handleSignOut} />
               </Container>
             )}
           </>
@@ -127,6 +144,7 @@ const Rooms = ({navigation}) => {
           }}
           onPress={() => {navigation.navigate('CreateRoom')}}
       />
+
     </>
   );
 }
