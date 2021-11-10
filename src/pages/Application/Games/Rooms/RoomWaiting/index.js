@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Alert, ScrollView } from 'react-native';
 
 import { Container,
@@ -20,8 +20,13 @@ import {useBackHandler} from '@react-native-community/hooks';
 
 import api from '../../../../../services/api';
 
+import io from 'socket.io-client';
+
 const RoomWaiting = ({route, navigation}) => {
+  let socket = io('http://192.168.2.100:3333');
+
   const [canceled, setCanceled] = useState(true);
+  const [information, setInformation] = useState(false);
 
   useBackHandler(() => {
     if (canceled) {
@@ -30,10 +35,21 @@ const RoomWaiting = ({route, navigation}) => {
     return false;
   });
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [loadingCanceled, setLoadingCanceled] = useState(false);
 
   const data = route.params.data;
+
+  socket.on('join', function(inf) {
+		socket.join(data.id);
+
+    setLoading(true);
+    setInformation(false);
+    setInformation(inf);
+    setLoading(false);
+
+	});
+
 
   async function askCanceled() {
     Alert.alert(
@@ -81,9 +97,33 @@ const RoomWaiting = ({route, navigation}) => {
     navigation.navigate('RockPaperScissors');
   }
 
+  async function loadRoomInformation() {
+    try {
+      const response = await api.get(`room-information?id=${data.id}`);
+
+      setInformation(response.data);
+
+      console.log(response.data)
+
+      setLoading(false);
+    } catch (error) {
+      setNumberRequest(numberRequest + 1);
+      if (numberRequest <= 3) {
+        loadRoomInformation();
+      } else {
+        handleCanceled();
+      }
+    }
+  }
+
+  useEffect(() => {
+    loadRoomInformation();
+  }, []);
+
   return (
     <ScrollView style={{flex: 1}}>
-      <Container>
+      {!loading && (
+        <Container>
         <ContainerInfoRoom>
           <Name>Nome da sala: {data.name}</Name>
           <Value>Aposta: {data.value} moedas</Value>
@@ -94,18 +134,18 @@ const RoomWaiting = ({route, navigation}) => {
         <Title>Jogadores: </Title>
 
         <ContainerPlayers>
-          <Player>
-            <Nickname>Miathuzin$2227</Nickname>
-            <Status>Pronto!</Status>
-          </Player>
+            <Player>
+              <Nickname>{information[0].player_owner && information[0].player_owner.nickname}</Nickname>
+              <Status>Pronto!</Status>
+            </Player>
 
-          <Line />
+            <Line />
 
-          <Player>
-            <Nickname>Rafs$1611</Nickname>
-            <Status>Aguardando...</Status>
-          </Player>
-        </ContainerPlayers>
+            <Player>
+              <Nickname>{information[0].player_punter && information[0].player_punter.nickname}</Nickname>
+              <Status>{information[0].player_punter ? 'Em espera...' : 'Aguarde um jogador entrar na sala...'} </Status>
+            </Player>
+          </ContainerPlayers>
 
         <Button mode="contained" onPress={handleSubmit} color="#002441" loading={loading} style={{marginTop: 40}}>
           JOGAR
@@ -115,6 +155,7 @@ const RoomWaiting = ({route, navigation}) => {
           CANCELAR SALA
         </Button>
       </Container>
+      )}
     </ScrollView>
   );
 }
