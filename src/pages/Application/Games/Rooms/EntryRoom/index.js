@@ -22,7 +22,11 @@ import api from '../../../../../services/api';
 
 import NetInfo from '../../../../../functions/NetInfo';
 
+import io from 'socket.io-client';
+
 const EntryRoom = ({route, navigation}) => {
+  let socket = io('http://192.168.2.125:3333');
+
   const [loading, setLoading] = useState(true);
   const [information, setInformation] = useState(false);
   const [loadingStart, setLoadingStart] = useState(false);
@@ -30,6 +34,13 @@ const EntryRoom = ({route, navigation}) => {
   const [canceled, setCanceled] = useState(true);
   const [status, setStatus] = useState(false);
   const data = route.params;
+
+  socket.on('information', inf => {
+    setLoading(true);
+    setInformation(false);
+    setInformation(inf);
+    setLoading(false);
+  });
 
   const [numberRequest, setNumberRequest] = useState(0);
 

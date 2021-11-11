@@ -17,7 +17,7 @@ import {useDispatch} from 'react-redux';
 import {signOut} from '../../../../store/modules/auth/actions';
 
 const Rooms = ({navigation}) => {
-  let socket = io('http://192.168.2.100:3333');
+  let socket = io('http://192.168.2.125:3333');
 
   const dispatch = useDispatch();
 

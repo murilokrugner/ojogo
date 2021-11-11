@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Alert, ScrollView } from 'react-native';
+import { Alert, ScrollView, ActivityIndicator } from 'react-native';
 
 import { Container,
   ContainerInfoRoom,
@@ -23,7 +23,7 @@ import api from '../../../../../services/api';
 import io from 'socket.io-client';
 
 const RoomWaiting = ({route, navigation}) => {
-  let socket = io('http://192.168.2.100:3333');
+  let socket = io('http://192.168.2.125:3333');
 
   const [canceled, setCanceled] = useState(true);
   const [information, setInformation] = useState(false);
@@ -40,16 +40,12 @@ const RoomWaiting = ({route, navigation}) => {
 
   const data = route.params.data;
 
-  socket.on('join', function(inf) {
-		socket.join(data.id);
-
+  socket.on(data.id, inf => {
     setLoading(true);
     setInformation(false);
     setInformation(inf);
     setLoading(false);
-
-	});
-
+  });
 
   async function askCanceled() {
     Alert.alert(
@@ -79,9 +75,11 @@ const RoomWaiting = ({route, navigation}) => {
 
       await api.delete(`rooms?id=${data.id}`);
 
+
       Alert.alert('Sala cancelada com sucesso!');
       navigation.goBack();
       navigation.goBack();
+
 
       setLoadingCanceled(false);
       setCanceled(false);
@@ -103,8 +101,6 @@ const RoomWaiting = ({route, navigation}) => {
 
       setInformation(response.data);
 
-      console.log(response.data)
-
       setLoading(false);
     } catch (error) {
       setNumberRequest(numberRequest + 1);
@@ -120,9 +116,13 @@ const RoomWaiting = ({route, navigation}) => {
     loadRoomInformation();
   }, []);
 
+  useEffect(() => {
+
+  }, [information]);
+
   return (
     <ScrollView style={{flex: 1}}>
-      {!loading && (
+      {!loading ? (
         <Container>
         <ContainerInfoRoom>
           <Name>Nome da sala: {data.name}</Name>
@@ -155,6 +155,8 @@ const RoomWaiting = ({route, navigation}) => {
           CANCELAR SALA
         </Button>
       </Container>
+      ) : (
+        <ActivityIndicator color="#000" size="large" />
       )}
     </ScrollView>
   );
