@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, ScrollView } from 'react-native';
 
-import { Container,
+import {
+  Container,
   ContainerInfoRoom,
   Name,
   Value,
@@ -16,7 +17,7 @@ import Line from '../../../../../components/Line';
 
 import { Button } from 'react-native-paper';
 
-import {useBackHandler} from '@react-native-community/hooks';
+import { useBackHandler } from '@react-native-community/hooks';
 
 import api from '../../../../../services/api';
 
@@ -24,9 +25,10 @@ import NetInfo from '../../../../../functions/NetInfo';
 
 import io from 'socket.io-client';
 
-const EntryRoom = ({route, navigation}) => {
-  let socket = io('http://192.168.2.125:3333');
+let socket = io('http://192.168.2.100:3333');
 
+const EntryRoom = ({ route, navigation }) => {
+  var sendStatus;
   const [loading, setLoading] = useState(true);
   const [information, setInformation] = useState(false);
   const [loadingStart, setLoadingStart] = useState(false);
@@ -35,18 +37,13 @@ const EntryRoom = ({route, navigation}) => {
   const [status, setStatus] = useState(false);
   const data = route.params;
 
-  socket.on('information', inf => {
-    setLoading(true);
-    setInformation(false);
-    setInformation(inf);
-    setLoading(false);
-  });
+  const [punter, setPunter] = useState(null);
 
   const [numberRequest, setNumberRequest] = useState(0);
 
   useBackHandler(() => {
     if (canceled) {
-        return true;
+      return true;
     }
     return false;
   });
@@ -55,53 +52,54 @@ const EntryRoom = ({route, navigation}) => {
     try {
       setLoadingStart(true);
 
-      const sendStatus = status === false ? true : false;
+      sendStatus = status === false ? true : false;
 
       await api.put(`room-information?id=${data.id}&status=${sendStatus}`);
 
-      setStatus(status === false ? true : false)
+      setStatus(status === false ? true : false);
 
       setLoadingStart(false);
     } catch (error) {
       Alert.alert('Não foi possivel dar ok na sala, tente novamente');
       setLoadingStart(false);
     }
-  };
+  }
 
   async function askCanceled() {
-    Alert.alert(
-      'Sair da sala',
-      `Deseja realmente sair dessa sala?`,
-      [
-        {
-          text: 'Não',
-          onPress: () => {
-              return;
-          },
-          style: 'cancel',
+    sendStatus = status === false ? true : false;
+
+    if (sendStatus === false) {
+      return;
+    }
+
+    Alert.alert('Sair da sala', `Deseja realmente sair dessa sala?`, [
+      {
+        text: 'Não',
+        onPress: () => {
+          return;
         },
-        {
-          text: 'Sim',
-          onPress: () => {
-            handleCanceled()
-          }
+        style: 'cancel',
+      },
+      {
+        text: 'Sim',
+        onPress: () => {
+          handleCanceled();
         },
-      ],
-    )
+      },
+    ]);
   }
 
   async function handleCanceled() {
     try {
       setLoadingCanceled(true);
 
-      await api.delete(`entry-room?id=${data.id}`);
+      await api.delete(`entry-room?id=${data.id}&type=0`);
 
       Alert.alert('Você saiu da sala!');
       navigation.goBack();
 
       setLoadingCanceled(false);
       setCanceled(false);
-
     } catch (error) {
       Alert.alert('Não foi possível sair da sala, tente novamente mais tarde');
       setLoadingCanceled(false);
@@ -113,6 +111,7 @@ const EntryRoom = ({route, navigation}) => {
       const response = await api.get(`room-information?id=${data.id}`);
 
       setInformation(response.data);
+      setPunter(response.data)
 
       setLoading(false);
     } catch (error) {
@@ -129,8 +128,16 @@ const EntryRoom = ({route, navigation}) => {
     loadRoomInformation();
   }, []);
 
+
+  useEffect(() => {
+    socket.on('information', (inf) => {
+      setPunter(false);
+      setPunter(inf);
+    });
+  }, []);
+
   return (
-    <ScrollView style={{flex: 1}}>
+    <ScrollView style={{ flex: 1 }}>
       {loading ? (
         <></>
       ) : (
@@ -147,29 +154,41 @@ const EntryRoom = ({route, navigation}) => {
           <ContainerPlayers>
             <Player>
               <Nickname>{information[0].player_owner.nickname}</Nickname>
-              <Status>Pronto!</Status>
+                <Status>Pronto!</Status>
             </Player>
 
             <Line />
-
-            <Player>
-              <Nickname>{information[0].player_punter.nickname}</Nickname>
-              <Status>Em espera...</Status>
-            </Player>
+            {punter !== null && (
+              <Player>
+                <Nickname>{punter[0].player_punter.nickname}</Nickname>
+                <Status>{status ? 'PRONTO' : 'Em espera...'}</Status>
+              </Player>
+            )}
           </ContainerPlayers>
 
-          <Button mode="contained" onPress={handleSubmit} color="#002441" style={{marginTop: 40}} loading={loadingStart}>
+          <Button
+            mode="contained"
+            onPress={handleSubmit}
+            color="#002441"
+            style={{ marginTop: 40 }}
+            loading={loadingStart}
+          >
             {status ? `CANCELAR PRONTO` : `JOGAR`}
           </Button>
 
-          <Button mode="contained" onPress={askCanceled} color="#000" loading={loadingCanceled} style={{marginTop: 40}}>
+          <Button
+            mode="contained"
+            onPress={askCanceled}
+            color="#000"
+            loading={loadingCanceled}
+            style={{ marginTop: 40 }}
+          >
             SAIR DA SALA
           </Button>
         </Container>
       )}
-
     </ScrollView>
   );
-}
+};
 
 export default EntryRoom;

@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {Alert, SafeAreaView, Button} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Alert, SafeAreaView, Button } from 'react-native';
 import {
   Container,
   ContainerSelect,
@@ -20,10 +20,15 @@ import {
   ContainerMove,
   TextVs,
   TitleStatus,
-  ContainerBorderMove
+  ContainerBorderMove,
 } from './styles';
 
-import Animated, {useSharedValue, useAnimatedStyle, withTiming, Easing} from 'react-native-reanimated';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  Easing,
+} from 'react-native-reanimated';
 
 import rockIcon from '../../../../assets/rock.png';
 import paperIcon from '../../../../assets/paper.png';
@@ -38,10 +43,10 @@ import go from '../../../../assets/animations/go.json';
 import io from 'socket.io-client';
 
 const RockPaperScissors = () => {
-  let socket = io('http://192.168.2.125:3333');
+  let socket = io('http://192.168.2.100:3333');
 
-  socket.on("connect", () => {
-    console.log(socket.id)
+  socket.on('connect', () => {
+    console.log(socket.id);
   });
 
   const animationRock = useSharedValue(0);
@@ -74,11 +79,15 @@ const RockPaperScissors = () => {
 
   const animatedStylesRock = useAnimatedStyle(() => {
     return {
-      transform: [{ translateY: withTiming(animationRock.value, {
-        duration: 250,
-      //  easing: Easing.exp
-      }) }]
-    }
+      transform: [
+        {
+          translateY: withTiming(animationRock.value, {
+            duration: 250,
+            //  easing: Easing.exp
+          }),
+        },
+      ],
+    };
   });
 
   function handleAnimationPositionRock() {
@@ -99,8 +108,11 @@ const RockPaperScissors = () => {
 
   const animatedStylesPaper = useAnimatedStyle(() => {
     return {
-      transform: [{ translateY: withTiming(animationPaper.value) }, {translateX: withTiming(animationPaperX.value)}]
-    }
+      transform: [
+        { translateY: withTiming(animationPaper.value) },
+        { translateX: withTiming(animationPaperX.value) },
+      ],
+    };
   });
 
   function handleAnimationPositionPaper() {
@@ -126,8 +138,11 @@ const RockPaperScissors = () => {
 
   const animatedStylesScissors = useAnimatedStyle(() => {
     return {
-      transform: [{ translateY: withTiming(animationScissors.value) }, {translateX: withTiming(animationScissorsX.value)}]
-    }
+      transform: [
+        { translateY: withTiming(animationScissors.value) },
+        { translateX: withTiming(animationScissorsX.value) },
+      ],
+    };
   });
 
   function handleAnimationPositionScissors() {
@@ -168,7 +183,6 @@ const RockPaperScissors = () => {
       } else {
         setRoundTwo('#FF1717');
       }
-
     } else if (round === 3) {
       if (winner === 1) {
         setRoundTree('#4DE022');
@@ -182,7 +196,6 @@ const RockPaperScissors = () => {
     setFinished(true);
   }
 
-
   function handleContinuePlay() {
     setPlayerOk(true);
     setRound(round < 3 && round + 1);
@@ -195,7 +208,7 @@ const RockPaperScissors = () => {
   }
 
   function processFinishedPlay() {
-    if(pointsPlayer > pointsRival) {
+    if (pointsPlayer > pointsRival) {
       Alert.alert('Você ganhou a partida!');
     } else if (pointsRival > pointsPlayer) {
       Alert.alert('Você perdeu a partida!');
@@ -216,7 +229,6 @@ const RockPaperScissors = () => {
     setMove(null);
     setConfirm(false);
     setFinished(false);
-
   }
 
   function processWinner() {
@@ -224,41 +236,33 @@ const RockPaperScissors = () => {
       setResult('Winner player 2');
       setPointsRival(pointsRival + 1);
       processRound(2);
-    }
-    else if (move === 'paper' && moveRival === 'rock') {
+    } else if (move === 'paper' && moveRival === 'rock') {
       setResult('Winner player 1');
       setPointsPlayer(pointsPlayer + 1);
       processRound(1);
-    }
-    else if (move === 'rock' && moveRival === 'scissors') {
+    } else if (move === 'rock' && moveRival === 'scissors') {
       setResult('Winner player 1');
       setPointsPlayer(pointsPlayer + 1);
       processRound(1);
-    }
-    else if (move === 'scissors' && moveRival === 'rock') {
+    } else if (move === 'scissors' && moveRival === 'rock') {
       setResult('Winner player 2');
       setPointsRival(pointsRival + 1);
       processRound(2);
-    }
-    else if (move === 'paper' && moveRival === 'scissors') {
+    } else if (move === 'paper' && moveRival === 'scissors') {
       setResult('Winner player 2');
       setPointsRival(pointsRival + 1);
       processRound(2);
-    }
-    else if (move === 'scissors' && moveRival === 'paper') {
+    } else if (move === 'scissors' && moveRival === 'paper') {
       setResult('Winner player 1');
       setPointsPlayer(pointsPlayer + 1);
       processRound(1);
-    }
-    else if (move === 'rock' && moveRival === 'rock') {
+    } else if (move === 'rock' && moveRival === 'rock') {
       setResult('Draw');
       processRound(0);
-    }
-    else if (move === 'paper' && moveRival === 'paper') {
+    } else if (move === 'paper' && moveRival === 'paper') {
       setResult('Draw');
       processRound(0);
-    }
-    else if (move === 'scissors' && moveRival === 'scissors') {
+    } else if (move === 'scissors' && moveRival === 'scissors') {
       setResult('Draw');
       processRound(0);
     }
@@ -276,95 +280,89 @@ const RockPaperScissors = () => {
     }
   }
 
-  useEffect(() => {
-
-  }, [confirm, move]);
+  useEffect(() => {}, [confirm, move]);
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-        <Container>
+    <SafeAreaView style={{ flex: 1 }}>
+      <Container>
+        <ContainerStatus>
+          <ContainerRound>
+            <TitleRound>Rodada {round}</TitleRound>
+            <ContainerStatusRound>
+              <RoundOne style={{ backgroundColor: roundOne }} />
+              <RoundTwo style={{ backgroundColor: roundTwo }} />
+              <RoundTree style={{ backgroundColor: roundTree }} />
+            </ContainerStatusRound>
+          </ContainerRound>
 
-          <ContainerStatus>
+          <ContainerTypeGame>
+            <TitleTypeGame>Melhor de 3</TitleTypeGame>
+          </ContainerTypeGame>
+        </ContainerStatus>
 
-            <ContainerRound>
-              <TitleRound>Rodada {round}</TitleRound>
-              <ContainerStatusRound>
-                <RoundOne style={{backgroundColor: roundOne}} />
-                <RoundTwo style={{backgroundColor: roundTwo}} />
-                <RoundTree style={{backgroundColor: roundTree}} />
-              </ContainerStatusRound>
-            </ContainerRound>
+        <ContainerGame>
+          <ContainerMove>
+            <ContainerBorderMove move={move} />
 
-            <ContainerTypeGame>
-              <TitleTypeGame>Melhor de 3</TitleTypeGame>
-            </ContainerTypeGame>
+            <TextVs>VS</TextVs>
 
-          </ContainerStatus>
+            <ContainerBorderMove move={moveRival}>
+              <Move onPress={() => {}}>
+                <TitleMove>Tesoura</TitleMove>
+                <ImageMove source={scissorsIcon}></ImageMove>
+              </Move>
+            </ContainerBorderMove>
+          </ContainerMove>
 
+          {finished && (
+            <>
+              <TitleStatus>{result}</TitleStatus>
+              <Button title={'Continuar'} onPress={handleContinuePlay} />
+            </>
+          )}
 
-          <ContainerGame>
-            <ContainerMove>
+          {confirm && !confirmRival && (
+            <TitleStatus>Aguardando jogador...</TitleStatus>
+          )}
 
-              <ContainerBorderMove move={move} />
+          {!confirm && move !== null && (
+            <Button title={'Confirmar jogada'} onPress={confirmMove} />
+          )}
+        </ContainerGame>
 
-              <TextVs>VS</TextVs>
+        <LottieView
+          source={go}
+          autoPlay
+          loop={false}
+          style={{ width: 200, height: 200 }}
+        />
 
-              <ContainerBorderMove move={moveRival}>
-                <Move onPress={() => {}}>
-                  <TitleMove>Tesoura</TitleMove>
-                  <ImageMove source={scissorsIcon}></ImageMove>
-                </Move>
-              </ContainerBorderMove>
-
-            </ContainerMove>
-
-
-            {finished && (
-              <>
-                <TitleStatus>{result}</TitleStatus>
-                <Button title={"Continuar"} onPress={handleContinuePlay} />
-              </>
-            )}
-
-            {confirm && !confirmRival && (
-              <TitleStatus>Aguardando jogador...</TitleStatus>
-            )}
-
-            {!confirm && move !== null && (
-              <Button title={"Confirmar jogada"} onPress={confirmMove} />
-            )}
-          </ContainerGame>
-
-
-          <LottieView source={go} autoPlay loop={false} style={{width: 200, height: 200}} />
-
-
-          <ContainerSelect>
-            <Line bottom={30} top={0}/>
-            <SelectMove>
-                <Animated.View style={[animatedStylesRock]}>
-                  <Move onPress={handleAnimationPositionRock}>
-                    <TitleMove>Pedra</TitleMove>
-                    <ImageMove source={rockIcon}></ImageMove>
-                  </Move>
-                </Animated.View>
-              <Animated.View style={[animatedStylesPaper]}>
-                <Move onPress={handleAnimationPositionPaper}>
-                  <TitleMove>Papel</TitleMove>
-                  <ImageMove source={paperIcon}></ImageMove>
-                </Move>
-              </Animated.View>
-              <Animated.View style={[animatedStylesScissors]}>
-                <Move onPress={handleAnimationPositionScissors}>
-                  <TitleMove>Tesoura</TitleMove>
-                  <ImageMove source={scissorsIcon}></ImageMove>
-                </Move>
-              </Animated.View>
-            </SelectMove>
-          </ContainerSelect>
-        </Container>
+        <ContainerSelect>
+          <Line bottom={30} top={0} />
+          <SelectMove>
+            <Animated.View style={[animatedStylesRock]}>
+              <Move onPress={handleAnimationPositionRock}>
+                <TitleMove>Pedra</TitleMove>
+                <ImageMove source={rockIcon}></ImageMove>
+              </Move>
+            </Animated.View>
+            <Animated.View style={[animatedStylesPaper]}>
+              <Move onPress={handleAnimationPositionPaper}>
+                <TitleMove>Papel</TitleMove>
+                <ImageMove source={paperIcon}></ImageMove>
+              </Move>
+            </Animated.View>
+            <Animated.View style={[animatedStylesScissors]}>
+              <Move onPress={handleAnimationPositionScissors}>
+                <TitleMove>Tesoura</TitleMove>
+                <ImageMove source={scissorsIcon}></ImageMove>
+              </Move>
+            </Animated.View>
+          </SelectMove>
+        </ContainerSelect>
+      </Container>
     </SafeAreaView>
   );
-}
+};
 
 export default RockPaperScissors;

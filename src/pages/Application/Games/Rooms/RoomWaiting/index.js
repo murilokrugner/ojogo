@@ -1,7 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Alert, ScrollView, ActivityIndicator } from 'react-native';
 
-import { Container,
+import {
+  Container,
   ContainerInfoRoom,
   Name,
   Value,
@@ -16,21 +17,22 @@ import Line from '../../../../../components/Line';
 
 import { Button } from 'react-native-paper';
 
-import {useBackHandler} from '@react-native-community/hooks';
+import { useBackHandler } from '@react-native-community/hooks';
 
 import api from '../../../../../services/api';
 
 import io from 'socket.io-client';
 
-const RoomWaiting = ({route, navigation}) => {
-  let socket = io('http://192.168.2.125:3333');
+let socket = io('http://192.168.2.100:3333');
 
+const RoomWaiting = ({ route, navigation }) => {
   const [canceled, setCanceled] = useState(true);
   const [information, setInformation] = useState(false);
+  const [punter, setPunter] = useState(null);
 
   useBackHandler(() => {
     if (canceled) {
-        return true;
+      return true;
     }
     return false;
   });
@@ -40,59 +42,58 @@ const RoomWaiting = ({route, navigation}) => {
 
   const data = route.params.data;
 
-  socket.on(data.id, inf => {
-    setLoading(true);
-    setInformation(false);
-    setInformation(inf);
-    setLoading(false);
-  });
-
   async function askCanceled() {
-    Alert.alert(
-      'Cancelar sala',
-      `Deseja realmente cancelar essa sala?`,
-      [
-        {
-          text: 'Não',
-          onPress: () => {
-              return;
-          },
-          style: 'cancel',
+    if (punter !== null) {
+      if (punter[0].player_punter) {
+        return;
+      }
+    }
+
+    Alert.alert('Cancelar sala', `Deseja realmente cancelar essa sala?`, [
+      {
+        text: 'Não',
+        onPress: () => {
+          return;
         },
-        {
-          text: 'Sim',
-          onPress: () => {
-            handleCanceled()
-          }
+        style: 'cancel',
+      },
+      {
+        text: 'Sim',
+        onPress: () => {
+          handleCanceled();
         },
-      ],
-    )
+      },
+    ]);
   }
 
   async function handleCanceled() {
     try {
       setLoadingCanceled(true);
 
-      await api.delete(`rooms?id=${data.id}`);
-
+      await api.delete(`rooms?id=${data.id}&type=1`);
 
       Alert.alert('Sala cancelada com sucesso!');
       navigation.goBack();
       navigation.goBack();
 
-
       setLoadingCanceled(false);
       setCanceled(false);
-
     } catch (error) {
-      Alert.alert('Não foi possível cancelar a sala, tente novamente mais tarde');
+      Alert.alert(
+        'Não foi possível cancelar a sala, tente novamente mais tarde'
+      );
       setLoadingCanceled(false);
-
     }
   }
 
   async function handleSubmit() {
-    navigation.navigate('RockPaperScissors');
+    if (punter !== null) {
+      if (punter[0].start === true) {
+        navigation.navigate('RockPaperScissors');
+      } else {
+        Alert.alert('O outro jogador ainda não está pronto');
+      }
+    }
   }
 
   async function loadRoomInformation() {
@@ -116,50 +117,86 @@ const RoomWaiting = ({route, navigation}) => {
     loadRoomInformation();
   }, []);
 
-  useEffect(() => {
 
-  }, [information]);
+  useEffect(() => {
+    if (!loadingCanceled) {
+      socket.on(data.id, (inf) => {
+        setPunter(null);
+        setPunter(inf);
+        console.log(inf)
+      });
+    }
+  }, []);
 
   return (
-    <ScrollView style={{flex: 1}}>
+    <ScrollView style={{ flex: 1 }}>
       {!loading ? (
         <Container>
-        <ContainerInfoRoom>
-          <Name>Nome da sala: {data.name}</Name>
-          <Value>Aposta: {data.value} moedas</Value>
-        </ContainerInfoRoom>
+          <ContainerInfoRoom>
+            <Name>Nome da sala: {data.name}</Name>
+            <Value>Aposta: {data.value} moedas</Value>
+          </ContainerInfoRoom>
 
-        <Line top={20} />
+          <Line top={20} />
 
-        <Title>Jogadores: </Title>
+          <Title>Jogadores: </Title>
 
-        <ContainerPlayers>
+          <ContainerPlayers>
             <Player>
-              <Nickname>{information[0].player_owner && information[0].player_owner.nickname}</Nickname>
+
+              <Nickname>
+                {information[0].player_owner &&
+                  information[0].player_owner.nickname}
+              </Nickname>
+
               <Status>Pronto!</Status>
             </Player>
 
             <Line />
 
             <Player>
-              <Nickname>{information[0].player_punter && information[0].player_punter.nickname}</Nickname>
-              <Status>{information[0].player_punter ? 'Em espera...' : 'Aguarde um jogador entrar na sala...'} </Status>
+              {punter !== null && (
+                <>
+                  <Nickname>
+                  {punter[0].player_punter &&
+                    punter[0].player_punter.nickname}
+                  </Nickname>
+                  <Status>
+                  {punter[0].start
+                    ? 'PRONTO'
+                    : 'Em espera...'}{' '}
+                  </Status>
+                </>
+              )}
+
             </Player>
           </ContainerPlayers>
 
-        <Button mode="contained" onPress={handleSubmit} color="#002441" loading={loading} style={{marginTop: 40}}>
-          JOGAR
-        </Button>
+          <Button
+            mode="contained"
+            onPress={handleSubmit}
+            color="#002441"
+            loading={loading}
+            style={{ marginTop: 40 }}
+          >
+            JOGAR
+          </Button>
 
-        <Button mode="contained" onPress={askCanceled} color="#000" loading={loadingCanceled} style={{marginTop: 40}}>
-          CANCELAR SALA
-        </Button>
-      </Container>
+          <Button
+            mode="contained"
+            onPress={askCanceled}
+            color="#000"
+            loading={loadingCanceled}
+            style={{ marginTop: 40 }}
+          >
+            CANCELAR SALA
+          </Button>
+        </Container>
       ) : (
         <ActivityIndicator color="#000" size="large" />
       )}
     </ScrollView>
   );
-}
+};
 
 export default RoomWaiting;

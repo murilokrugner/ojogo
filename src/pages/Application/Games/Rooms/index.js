@@ -1,7 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, StyleSheet, FlatList, Button } from 'react-native';
 import io from 'socket.io-client';
-import { ContainerLoading, Container, ContainerRooms, TitleRoom, Value, Owner } from './styles';
+import {
+  ContainerLoading,
+  Container,
+  ContainerRooms,
+  TitleRoom,
+  Value,
+  Owner,
+} from './styles';
 
 import { FAB } from 'react-native-paper';
 
@@ -11,13 +18,14 @@ import api from '../../../../services/api';
 
 import loadingIcon from '../../../../assets/animations/loading.json';
 
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import {useDispatch} from 'react-redux';
-import {signOut} from '../../../../store/modules/auth/actions';
+import { useDispatch } from 'react-redux';
+import { signOut } from '../../../../store/modules/auth/actions';
 
-const Rooms = ({navigation}) => {
-  let socket = io('http://192.168.2.125:3333');
+let socket = io('http://192.168.2.100:3333');
+
+const Rooms = ({ navigation }) => {
 
   const dispatch = useDispatch();
 
@@ -25,15 +33,10 @@ const Rooms = ({navigation}) => {
     dispatch(signOut());
   }
 
-  const user = useSelector(state => state.user.profile);
+  const user = useSelector((state) => state.user.profile);
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(false);
-
-  socket.on('room', room => {
-    setData(false);
-    setData(room);
-  });
 
   async function loadRooms() {
     try {
@@ -46,11 +49,11 @@ const Rooms = ({navigation}) => {
       }
 
       setLoading(false);
-
     } catch (error) {
-      Alert.alert('Não foi possível carregar os dados, tente novamente mais tarde...')
+      Alert.alert(
+        'Não foi possível carregar os dados, tente novamente mais tarde...'
+      );
       setLoading(false);
-
     }
   }
 
@@ -62,18 +65,18 @@ const Rooms = ({navigation}) => {
         {
           text: 'Não',
           onPress: () => {
-              return;
+            return;
           },
           style: 'cancel',
         },
         {
           text: 'Sim',
           onPress: () => {
-            handleSubmit(item)
-          }
+            handleSubmit(item);
+          },
         },
-      ],
-    )
+      ]
+    );
   }
 
   async function handleSubmit(item) {
@@ -86,13 +89,22 @@ const Rooms = ({navigation}) => {
       navigation.navigate('EntryRoom', item);
 
       Alert.alert('Você entrou na sala');
-
-
     } catch (error) {
-      Alert.alert('Não foi possível entrar na sala, tente novamente mais tarde');
+      Alert.alert(
+        'Não foi possível entrar na sala, tente novamente mais tarde'
+      );
       return;
     }
   }
+
+  useEffect(() => {
+    socket.on('room', (room) => {
+      setLoading(true);
+      setData(false);
+      setData(room);
+      setLoading(false);
+    });
+  }, []);
 
   useEffect(() => {
     loadRooms();
@@ -100,54 +112,62 @@ const Rooms = ({navigation}) => {
 
   return (
     <>
-        {loading ? (
-          <ContainerLoading>
-            <LottieView source={loadingIcon} autoPlay loop={false} style={{width: 200, height: 200}} />
-          </ContainerLoading>
-        ): (
-          <>
-            {data === null ? (
-              <>
-                <TitleRoom>Nenhuma sala encontrada</TitleRoom>
-              </>
-            ) : (
-              <Container>
-                <FlatList
-                  onEndReachedThreshold={0.01}
-                  style={{flex: 1}}
-                  data={data}
-                  renderItem={({item}) => (
-                    <ContainerRooms onPress={() => {entryRoom(item)}}>
-                      <TitleRoom>
-                        Sala: {item.name}
-                      </TitleRoom>
-                      <Value>
-                        Valor da aposta: {item.gamesvalues.value} moedas
-                      </Value>
-                      <Owner>Dono da sala: {item.player_owner.nickname}</Owner>
-                    </ContainerRooms>
-                  )}
-                  keyExtractor={item => item.id}
-                />
-                <Button title="SAIR" onPress={handleSignOut} />
-              </Container>
-            )}
-          </>
-        )}
+      {loading ? (
+        <ContainerLoading>
+          <LottieView
+            source={loadingIcon}
+            autoPlay
+            loop={false}
+            style={{ width: 200, height: 200 }}
+          />
+        </ContainerLoading>
+      ) : (
+        <>
+          {data === null || data === undefined || data.length === 0 ? (
+            <>
+              <TitleRoom>Nenhuma sala encontrada</TitleRoom>
+            </>
+          ) : (
+            <Container>
+              <FlatList
+                onEndReachedThreshold={0.01}
+                style={{ flex: 1 }}
+                data={data}
+                renderItem={({ item }) => (
+                  <ContainerRooms
+                    onPress={() => {
+                      entryRoom(item);
+                    }}
+                  >
+                    <TitleRoom>Sala: {item.name}</TitleRoom>
+                    <Value>
+                      Valor da aposta: {item.gamesvalues.value} moedas
+                    </Value>
+                    <Owner>Dono da sala: {item.player_owner.nickname}</Owner>
+                  </ContainerRooms>
+                )}
+                keyExtractor={(item) => item.id}
+              />
+              <Button title="SAIR" onPress={handleSignOut} />
+            </Container>
+          )}
+        </>
+      )}
       <FAB
-          style={styles.fab}
-          large
-          icon="plus"
-          color={'#00325a'}
-          fabStyle={{
-            backgroundColor: '#fff',
-          }}
-          onPress={() => {navigation.navigate('CreateRoom')}}
+        style={styles.fab}
+        large
+        icon="plus"
+        color={'#00325a'}
+        fabStyle={{
+          backgroundColor: '#fff',
+        }}
+        onPress={() => {
+          navigation.navigate('CreateRoom');
+        }}
       />
-
     </>
   );
-}
+};
 
 const styles = StyleSheet.create({
   fab: {
@@ -156,6 +176,6 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 40,
   },
-})
+});
 
 export default Rooms;
