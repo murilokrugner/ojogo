@@ -23,7 +23,7 @@ import api from '../../../../../services/api';
 
 import io from 'socket.io-client';
 
-let socket = io('http://192.168.2.108:3333');
+let socket = io('http://192.168.2.177:3333');
 
 const RoomWaiting = ({ route, navigation }) => {
   var sendStatus;
@@ -92,7 +92,7 @@ const RoomWaiting = ({ route, navigation }) => {
     try {
       await api.put(`room-information-owner?id=${data.id}&status=${true}`);
 
-      navigation.navigate('RockPaperScissors', {data});
+      navigation.navigate('RockPaperScissors', { data });
     } catch (error) {
       Alert.alert('Não foi possivel dar ok na sala, tente novamente');
     }
@@ -129,7 +129,6 @@ const RoomWaiting = ({ route, navigation }) => {
     loadRoomInformation();
   }, []);
 
-
   useEffect(() => {
     if (!loadingCanceled) {
       socket.on(data.id, (inf) => {
@@ -138,7 +137,6 @@ const RoomWaiting = ({ route, navigation }) => {
       });
     }
   }, []);
-
 
   return (
     <ScrollView style={{ flex: 1 }}>
@@ -155,7 +153,6 @@ const RoomWaiting = ({ route, navigation }) => {
 
           <ContainerPlayers>
             <Player>
-
               <Nickname>
                 {information[0].player_owner &&
                   information[0].player_owner.nickname}
@@ -170,17 +167,14 @@ const RoomWaiting = ({ route, navigation }) => {
               {punter !== null && (
                 <>
                   <Nickname>
-                  {punter[0].player_punter &&
-                    punter[0].player_punter.nickname}
+                    {punter[0].player_punter &&
+                      punter[0].player_punter.nickname}
                   </Nickname>
                   <Status>
-                  {punter[0].start
-                    ? 'PRONTO'
-                    : 'Em espera...'}{' '}
+                    {punter[0].start ? 'PRONTO' : 'Em espera...'}{' '}
                   </Status>
                 </>
               )}
-
             </Player>
           </ContainerPlayers>
 

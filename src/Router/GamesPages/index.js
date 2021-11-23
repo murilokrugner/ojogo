@@ -9,10 +9,11 @@ import Rooms from '../../pages/Application/Games/Rooms';
 import CreateRoom from '../../pages/Application/Games/Rooms/CreateRoom';
 import RoomWaiting from '../../pages/Application/Games/Rooms/RoomWaiting';
 import EntryRoom from '../../pages/Application/Games/Rooms/EntryRoom';
+import FinishedPlay from '../../pages/Application/Games/FinishedPlay';
 
 const Stack = createStackNavigator();
 
-export default function Auth() {
+export default function Games() {
     return (
       <NavigationContainer independent={true}>
         <Stack.Navigator
@@ -76,6 +77,17 @@ export default function Auth() {
               headerShown: false,
               headerTitle: 'Sala',
               headerBackTitle: 'Voltar',
+              headerTintColor: '#fff',
+              headerStyle: {
+                backgroundColor: '#002441',
+              }
+            }}
+          />
+          <Stack.Screen name="FinishedPlay" component={FinishedPlay}
+            options={{
+              headerShown: false,
+              headerTitle: '',
+              headerBackTitle: '',
               headerTintColor: '#fff',
               headerStyle: {
                 backgroundColor: '#002441',

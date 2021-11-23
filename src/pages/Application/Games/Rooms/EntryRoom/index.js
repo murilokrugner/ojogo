@@ -25,12 +25,12 @@ import NetInfo from '../../../../../functions/NetInfo';
 
 import io from 'socket.io-client';
 
-let socket = io('http://192.168.2.108:3333');
+let socket = io('http://192.168.2.177:3333');
 
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const EntryRoom = ({ route, navigation }) => {
-  const user = useSelector(state => state.user.profile);
+  const user = useSelector((state) => state.user.profile);
 
   var sendStatus;
   const [loading, setLoading] = useState(true);
@@ -115,7 +115,7 @@ const EntryRoom = ({ route, navigation }) => {
       const response = await api.get(`room-information?id=${data.id}`);
 
       setInformation(response.data);
-      setPunter(response.data)
+      setPunter(response.data);
 
       setLoading(false);
     } catch (error) {
@@ -132,16 +132,14 @@ const EntryRoom = ({ route, navigation }) => {
     loadRoomInformation();
   }, []);
 
-
   useEffect(() => {
     socket.on(`${data.id}`, (inf) => {
       setPunter(false);
       setPunter(inf);
 
-
       if (inf) {
         if (inf[0].start_owner === true) {
-          navigation.navigate('RockPaperScissors', {data});
+          navigation.navigate('RockPaperScissors', { data });
         }
       }
     });
@@ -165,7 +163,7 @@ const EntryRoom = ({ route, navigation }) => {
           <ContainerPlayers>
             <Player>
               <Nickname>{information[0].player_owner.nickname}</Nickname>
-                <Status>Pronto!</Status>
+              <Status>Pronto!</Status>
             </Player>
 
             <Line />

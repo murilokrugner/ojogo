@@ -42,12 +42,14 @@ import go from '../../../../assets/animations/go.json';
 
 import io from 'socket.io-client';
 
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
-const RockPaperScissors = ({route}) => {
-  const user = useSelector(state => state.user.profile);
+import api from '../../../../services/api';
 
-  let socket = io('http://192.168.2.108:3333');
+const RockPaperScissors = ({ route }) => {
+  const user = useSelector((state) => state.user.profile);
+
+  let socket = io('http://192.168.2.177:3333');
 
   const data = route.params.data;
 
@@ -64,13 +66,12 @@ const RockPaperScissors = ({route}) => {
   const [roundTree, setRoundTree] = useState('#fff');
 
   const [move, setMove] = useState(null);
-  const [moveRival, setMoveRival] = useState('scissors');
+  const [moveRival, setMoveRival] = useState(null);
 
   const [confirm, setConfirm] = useState(false);
   const [confirmRival, setConfirmRival] = useState(true);
 
   const [playerOk, setPlayerOk] = useState(false);
-  const [rivalOk, setRivalOk] = useState(true);
 
   const [finished, setFinished] = useState(false);
   const [finishedAll, setFinishedAll] = useState(false);
@@ -78,6 +79,8 @@ const RockPaperScissors = ({route}) => {
 
   const [pointsPlayer, setPointsPlayer] = useState(0);
   const [pointsRival, setPointsRival] = useState(0);
+
+  const [loadingMove, setLoadingMove] = useState(false);
 
   const animatedStylesRock = useAnimatedStyle(() => {
     return {
@@ -273,16 +276,44 @@ const RockPaperScissors = ({route}) => {
   function confirmMove() {
     if (move !== null) {
       setConfirm(true);
+      sendMove();
     } else {
       setConfirm(false);
     }
+  }
 
-    if (confirmRival) {
-      processWinner();
+  async function sendMove() {
+    setLoadingMove(true);
+    try {
+      const response = await api.post('plays', {
+        id_room: data.id,
+        player: user.id,
+        move: move,
+        round: round,
+      });
+
+      setLoadingMove(false);
+    } catch (error) {
+      Alert.alert('Não foi possível registrar sua jogada, tente novamente');
+      setLoadingMove(false);
     }
   }
 
-  useEffect(() => {}, [confirm, move]);
+  async function verifyMove(inf) {
+    const map = inf.map(item => {
+      if(item.player_id !== user.id) {
+        setConfirmRival(true);
+        setMoveRival(item.move);
+        processWinner();
+      }
+    });
+  }
+
+  useEffect(() => {
+    socket.on(`plays-${data.id}`, (inf) => {
+      verifyMove(inf);
+    });
+  }, [confirm, move]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -311,7 +342,11 @@ const RockPaperScissors = ({route}) => {
             <ContainerBorderMove move={moveRival}>
               <Move onPress={() => {}}>
                 <TitleMove>Tesoura</TitleMove>
-                <ImageMove source={scissorsIcon}></ImageMove>
+                {moveRival === null ? (
+                  <></> //COLOCAR UMA IMAGEM PARA REPRESENTAR A CARTA
+                ) : (
+                  <ImageMove source={moveRival === 'rock' ? rockIcon : moveRival === 'paper' ? paperIcon : scissorsIcon}></ImageMove>
+                )}
               </Move>
             </ContainerBorderMove>
           </ContainerMove>

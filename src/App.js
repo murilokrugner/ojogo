@@ -10,7 +10,7 @@ function App() {
 
   return (
     <AuthContext.Provider value={{registred, setRegistred}}>
-      <Routes signed={signed} />
+      <Routes signed={signed}/>
     </AuthContext.Provider>
   );
 }
