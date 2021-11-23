@@ -25,9 +25,13 @@ import NetInfo from '../../../../../functions/NetInfo';
 
 import io from 'socket.io-client';
 
-let socket = io('http://192.168.2.100:3333');
+let socket = io('http://192.168.2.108:3333');
+
+import {useSelector} from 'react-redux';
 
 const EntryRoom = ({ route, navigation }) => {
+  const user = useSelector(state => state.user.profile);
+
   var sendStatus;
   const [loading, setLoading] = useState(true);
   const [information, setInformation] = useState(false);
@@ -130,9 +134,16 @@ const EntryRoom = ({ route, navigation }) => {
 
 
   useEffect(() => {
-    socket.on('information', (inf) => {
+    socket.on(`${data.id}`, (inf) => {
       setPunter(false);
       setPunter(inf);
+
+
+      if (inf) {
+        if (inf[0].start_owner === true) {
+          navigation.navigate('RockPaperScissors', {data});
+        }
+      }
     });
   }, []);
 
@@ -158,12 +169,10 @@ const EntryRoom = ({ route, navigation }) => {
             </Player>
 
             <Line />
-            {punter !== null && (
-              <Player>
-                <Nickname>{punter[0].player_punter.nickname}</Nickname>
-                <Status>{status ? 'PRONTO' : 'Em espera...'}</Status>
-              </Player>
-            )}
+            <Player>
+              <Nickname>{user.nickname}</Nickname>
+              <Status>{status ? 'PRONTO' : 'Em espera...'}</Status>
+            </Player>
           </ContainerPlayers>
 
           <Button

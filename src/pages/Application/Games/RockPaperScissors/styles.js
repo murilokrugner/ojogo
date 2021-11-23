@@ -12,7 +12,6 @@ export const Container = styled.View`
 
 export const ContainerSelect = styled.View`
   padding: 20px;
-  margin-bottom: 20px;
   width: 100%;
 `;
 
@@ -67,6 +66,8 @@ export const ContainerRound = styled.View`
 export const TitleRound = styled.Text`
   font-size: 14px;
   margin-bottom: 8px;
+
+  color: #000;
 `;
 
 export const ContainerStatusRound = styled.View`
@@ -118,6 +119,8 @@ export const ContainerTypeGame = styled.View`
 export const TitleTypeGame = styled.Text`
 
   font-size: 14px;
+
+  color: #000;
 `;
 
 
@@ -137,11 +140,15 @@ export const ContainerMove = styled.View`
   width: 330px;
 `;
 
-export const TextVs = styled.Text``;
+export const TextVs = styled.Text`
+  color: #000;
+`;
 
 export const TitleStatus = styled.Text`
   font-size: 16px;
   font-weight: bold;
+
+  color: #000;
 `;
 
 export const ContainerBorderMove = styled.View`

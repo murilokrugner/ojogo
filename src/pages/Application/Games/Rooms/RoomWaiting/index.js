@@ -23,9 +23,11 @@ import api from '../../../../../services/api';
 
 import io from 'socket.io-client';
 
-let socket = io('http://192.168.2.100:3333');
+let socket = io('http://192.168.2.108:3333');
 
 const RoomWaiting = ({ route, navigation }) => {
+  var sendStatus;
+
   const [canceled, setCanceled] = useState(true);
   const [information, setInformation] = useState(false);
   const [punter, setPunter] = useState(null);
@@ -86,10 +88,20 @@ const RoomWaiting = ({ route, navigation }) => {
     }
   }
 
+  async function updateRoomOwnerStart() {
+    try {
+      await api.put(`room-information-owner?id=${data.id}&status=${true}`);
+
+      navigation.navigate('RockPaperScissors', {data});
+    } catch (error) {
+      Alert.alert('Não foi possivel dar ok na sala, tente novamente');
+    }
+  }
+
   async function handleSubmit() {
     if (punter !== null) {
       if (punter[0].start === true) {
-        navigation.navigate('RockPaperScissors');
+        updateRoomOwnerStart();
       } else {
         Alert.alert('O outro jogador ainda não está pronto');
       }
@@ -123,10 +135,10 @@ const RoomWaiting = ({ route, navigation }) => {
       socket.on(data.id, (inf) => {
         setPunter(null);
         setPunter(inf);
-        console.log(inf)
       });
     }
   }, []);
+
 
   return (
     <ScrollView style={{ flex: 1 }}>

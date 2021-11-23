@@ -23,7 +23,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { signOut } from '../../../../store/modules/auth/actions';
 
-let socket = io('http://192.168.2.100:3333');
+let socket = io('http://192.168.2.108:3333');
 
 const Rooms = ({ navigation }) => {
 

@@ -42,12 +42,14 @@ import go from '../../../../assets/animations/go.json';
 
 import io from 'socket.io-client';
 
-const RockPaperScissors = () => {
-  let socket = io('http://192.168.2.100:3333');
+import {useSelector} from 'react-redux';
 
-  socket.on('connect', () => {
-    console.log(socket.id);
-  });
+const RockPaperScissors = ({route}) => {
+  const user = useSelector(state => state.user.profile);
+
+  let socket = io('http://192.168.2.108:3333');
+
+  const data = route.params.data;
 
   const animationRock = useSharedValue(0);
   const animationPaper = useSharedValue(0);
