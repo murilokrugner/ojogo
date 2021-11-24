@@ -46,10 +46,11 @@ import { useSelector } from 'react-redux';
 
 import api from '../../../../services/api';
 
+let socket = io('http://192.168.2.108:3333');
+
 const RockPaperScissors = ({ route }) => {
   const user = useSelector((state) => state.user.profile);
 
-  let socket = io('http://192.168.2.177:3333');
 
   const data = route.params.data;
 
@@ -198,12 +199,14 @@ const RockPaperScissors = ({ route }) => {
       }
     }
 
-    setFinished(true);
+    setFinished(true);    
   }
 
   function handleContinuePlay() {
     setPlayerOk(true);
     setRound(round < 3 && round + 1);
+    setMove(null);
+    setMoveRival(null);
 
     if (round === 3) {
       processFinishedPlay();
@@ -299,21 +302,41 @@ const RockPaperScissors = ({ route }) => {
     }
   }
 
-  async function verifyMove(inf) {
-    const map = inf.map(item => {
-      if(item.player_id !== user.id) {
+  async function verifyMove(inf) {   
+    setMove(null);
+    setMoveRival(null);
+
+    inf.map(item => {
+      if(item.player_id !== user.id && item.round === round) {
         setConfirmRival(true);
         setMoveRival(item.move);
         processWinner();
       }
-    });
+      if(item.player_id === user.id && item.round === round) {
+        setMove(item.move);
+      }
+    });    
+  }
+
+  async function loadRoomInformation() {
+    try {
+        const response = await api.get(`plays?id_room=${data.id}&round=${round}`);
+
+        verifyMove(response.data);
+    } catch (error) {
+      Alert.alert('Erro ao carregar os dados')
+    }
   }
 
   useEffect(() => {
+    loadRoomInformation();
+  }, [confirm, socket]);
+
+  useEffect(() => {    
     socket.on(`plays-${data.id}`, (inf) => {
-      verifyMove(inf);
+      verifyMove(inf);   
     });
-  }, [confirm, move]);
+  }, []); 
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -341,11 +364,20 @@ const RockPaperScissors = ({ route }) => {
 
             <ContainerBorderMove move={moveRival}>
               <Move onPress={() => {}}>
-                <TitleMove>Tesoura</TitleMove>
+                
                 {moveRival === null ? (
                   <></> //COLOCAR UMA IMAGEM PARA REPRESENTAR A CARTA
                 ) : (
-                  <ImageMove source={moveRival === 'rock' ? rockIcon : moveRival === 'paper' ? paperIcon : scissorsIcon}></ImageMove>
+                  <>
+                    {moveRival === 0 && (<TitleMove>Pedra</TitleMove>)}
+                    {moveRival === 1 && (<TitleMove>Papel</TitleMove>)}
+                    {moveRival === 2 && (<TitleMove>Tesoura</TitleMove>)}
+
+                    {moveRival === 0 && (<ImageMove source={rockIcon}></ImageMove>)}
+                    {moveRival === 1 && (<ImageMove source={paperIcon}></ImageMove>)}
+                    {moveRival === 2 && (<ImageMove source={scissorsIcon}></ImageMove>)}                   
+                    
+                  </>
                 )}
               </Move>
             </ContainerBorderMove>

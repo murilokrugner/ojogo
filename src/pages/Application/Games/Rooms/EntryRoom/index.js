@@ -25,7 +25,7 @@ import NetInfo from '../../../../../functions/NetInfo';
 
 import io from 'socket.io-client';
 
-let socket = io('http://192.168.2.177:3333');
+let socket = io('http://192.168.2.108:3333');
 
 import { useSelector } from 'react-redux';
 
