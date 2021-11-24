@@ -15,9 +15,10 @@ import {Button} from 'react-native-paper';
 const FinishedPlay = ({route, navigation}) => {
   const user = useSelector((state) => state.user.profile);
 
-  //const data = route.params.data;
+  const data = route.params.data;
 
   function Continue() {
+    navigation.goBack();
     navigation.goBack();
     navigation.goBack();
     navigation.goBack();

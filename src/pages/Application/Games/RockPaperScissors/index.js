@@ -22,35 +22,27 @@ import {
   TitleStatus,
   ContainerBorderMove,
 } from './styles';
-
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
   Easing,
 } from 'react-native-reanimated';
-
 import rockIcon from '../../../../assets/rock.png';
 import paperIcon from '../../../../assets/paper.png';
 import scissorsIcon from '../../../../assets/scissors.png';
-
 import LottieView from 'lottie-react-native';
-
 import Line from '../../../../components/Line';
-
 import go from '../../../../assets/animations/go.json';
-
 import io from 'socket.io-client';
-
 import { useSelector } from 'react-redux';
-
 import api from '../../../../services/api';
+import { ActivityIndicator } from 'react-native-paper';
 
-let socket = io('http://192.168.2.108:3333');
+let socket = io('http://192.168.2.177:3333');
 
-const RockPaperScissors = ({ route }) => {
+const RockPaperScissors = ({ route, navigation }) => {
   const user = useSelector((state) => state.user.profile);
-
 
   const data = route.params.data;
 
@@ -82,6 +74,8 @@ const RockPaperScissors = ({ route }) => {
   const [pointsRival, setPointsRival] = useState(0);
 
   const [loadingMove, setLoadingMove] = useState(false);
+
+  const [loadingProcess, setLoadingProcess] = useState(false);
 
   const animatedStylesRock = useAnimatedStyle(() => {
     return {
@@ -199,7 +193,9 @@ const RockPaperScissors = ({ route }) => {
       }
     }
 
-    setFinished(true);    
+    setFinished(true);
+    setLoadingProcess(false);
+
   }
 
   function handleContinuePlay() {
@@ -225,6 +221,7 @@ const RockPaperScissors = ({ route }) => {
     }
 
     setFinishedAll(true);
+    navigation.navigate('FinishedPlay', {data});
   }
 
   function emptyScrenn() {
@@ -239,7 +236,8 @@ const RockPaperScissors = ({ route }) => {
     setFinished(false);
   }
 
-  function processWinner() {
+  function processWinner(move, moveRival) {
+    setLoadingProcess(true);
     if (move === 'rock' && moveRival === 'paper') {
       setResult('Winner player 2');
       setPointsRival(pointsRival + 1);
@@ -302,41 +300,53 @@ const RockPaperScissors = ({ route }) => {
     }
   }
 
-  async function verifyMove(inf) {   
-    setMove(null);
-    setMoveRival(null);
+  async function verifyMove(inf) {
+    try {
+      setFinished(false);
 
-    inf.map(item => {
-      if(item.player_id !== user.id && item.round === round) {
+      const me = inf.filter(item => item.player_id === user.id);
+      const rival = inf.filter(item => item.player_id !== user.id);
+
+      if (rival[0]) {
         setConfirmRival(true);
-        setMoveRival(item.move);
-        processWinner();
+        setMoveRival(rival[0].move);
       }
-      if(item.player_id === user.id && item.round === round) {
-        setMove(item.move);
+
+      if (me[0]) {
+        setMove(me[0].move);
       }
-    });    
+
+      if (me[0] && rival[0]) {
+        processWinner(me[0].move, rival[0].move);
+      }
+    } catch (error) {
+      Alert.alert('Erro ao carregar dados');
+    }
   }
 
   async function loadRoomInformation() {
     try {
-        const response = await api.get(`plays?id_room=${data.id}&round=${round}`);
+      const response = await api.get(`plays?id_room=${data.id}&round=${round}`);
 
-        verifyMove(response.data);
+      verifyMove(response.data);
     } catch (error) {
-      Alert.alert('Erro ao carregar os dados')
+      Alert.alert('Erro ao carregar os dados');
     }
   }
 
   useEffect(() => {
     loadRoomInformation();
-  }, [confirm, socket]);
+  }, []);
 
-  useEffect(() => {    
+  useEffect(() => {
     socket.on(`plays-${data.id}`, (inf) => {
-      verifyMove(inf);   
+      verifyMove(inf)
     });
-  }, []); 
+  }, []);
+
+  useEffect(() => {
+
+  }, [loadingProcess]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -364,37 +374,47 @@ const RockPaperScissors = ({ route }) => {
 
             <ContainerBorderMove move={moveRival}>
               <Move onPress={() => {}}>
-                
                 {moveRival === null ? (
                   <></> //COLOCAR UMA IMAGEM PARA REPRESENTAR A CARTA
                 ) : (
                   <>
-                    {moveRival === 0 && (<TitleMove>Pedra</TitleMove>)}
-                    {moveRival === 1 && (<TitleMove>Papel</TitleMove>)}
-                    {moveRival === 2 && (<TitleMove>Tesoura</TitleMove>)}
+                    {moveRival === 0 && <TitleMove>Pedra</TitleMove>}
+                    {moveRival === 1 && <TitleMove>Papel</TitleMove>}
+                    {moveRival === 2 && <TitleMove>Tesoura</TitleMove>}
 
-                    {moveRival === 0 && (<ImageMove source={rockIcon}></ImageMove>)}
-                    {moveRival === 1 && (<ImageMove source={paperIcon}></ImageMove>)}
-                    {moveRival === 2 && (<ImageMove source={scissorsIcon}></ImageMove>)}                   
-                    
+                    {moveRival === 0 && (
+                      <ImageMove source={rockIcon}></ImageMove>
+                    )}
+                    {moveRival === 1 && (
+                      <ImageMove source={paperIcon}></ImageMove>
+                    )}
+                    {moveRival === 2 && (
+                      <ImageMove source={scissorsIcon}></ImageMove>
+                    )}
                   </>
                 )}
               </Move>
             </ContainerBorderMove>
           </ContainerMove>
 
-          {finished && (
+          {loadingProcess ? (
+            <ActivityIndicator color="#000" size="small" />
+          ) : (
             <>
-              <TitleStatus>{result}</TitleStatus>
-              <Button title={'Continuar'} onPress={handleContinuePlay} />
+              {finished && (
+                <>
+                  <TitleStatus>{result}</TitleStatus>
+                  <Button title={'Continuar'} onPress={handleContinuePlay} />
+                </>
+              )}
             </>
           )}
 
-          {confirm && !confirmRival && (
+          {confirm && !moveRival === null && (
             <TitleStatus>Aguardando jogador...</TitleStatus>
           )}
 
-          {!confirm && move !== null && (
+          {move !== null && !confirm && (
             <Button title={'Confirmar jogada'} onPress={confirmMove} />
           )}
         </ContainerGame>
