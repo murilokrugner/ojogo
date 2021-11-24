@@ -163,7 +163,7 @@ export const ContainerBorderMove = styled.View`
   border: ${props => props.move === null ? "0.3px" : "0px"};
   border-radius: 10px;
 
-  padding: 20px;
+  padding: 50px;
 
   width: 90px;
 `;

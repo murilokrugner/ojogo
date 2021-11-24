@@ -25,7 +25,11 @@ import { signOut } from '../../../../store/modules/auth/actions';
 
 let socket = io('http://192.168.2.177:3333');
 
+import { useIsFocused } from '@react-navigation/native';
+
 const Rooms = ({ navigation }) => {
+  const isFocused = useIsFocused();
+
   const dispatch = useDispatch();
 
   async function handleSignOut() {
@@ -107,7 +111,7 @@ const Rooms = ({ navigation }) => {
 
   useEffect(() => {
     loadRooms();
-  }, []);
+  }, [isFocused]);
 
   return (
     <>
@@ -156,7 +160,7 @@ const Rooms = ({ navigation }) => {
         style={styles.fab}
         large
         icon="plus"
-        color={'#00325a'}
+        color={'#fff'}
         fabStyle={{
           backgroundColor: '#fff',
         }}
@@ -174,6 +178,7 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 40,
+    backgroundColor: '#00325a'
   },
 });
 

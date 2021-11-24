@@ -13,6 +13,12 @@ import FinishedPlay from '../../pages/Application/Games/FinishedPlay';
 
 const Stack = createStackNavigator();
 
+import ProfileHeader from '../../components/ProfileHeader';
+
+import Profile from '../../pages/Application/User/Profile';
+
+import eu from '../../assets/eu.jpeg';
+
 export default function Games() {
     return (
       <NavigationContainer independent={true}>
@@ -42,12 +48,12 @@ export default function Games() {
           <Stack.Screen name="Rooms" component={Rooms}
             options={{
               headerShown: true,
-              headerTitle: 'Salas',
               headerBackTitle: 'Voltar',
               headerTintColor: '#fff',
               headerStyle: {
                 backgroundColor: '#002441',
-              }
+              },
+              headerTitle: (props) => <ProfileHeader title={"Salas"} image={eu} screen={'Profile'}/>
             }}
           />
           <Stack.Screen name="CreateRoom" component={CreateRoom}
@@ -87,6 +93,17 @@ export default function Games() {
             options={{
               headerShown: false,
               headerTitle: '',
+              headerBackTitle: '',
+              headerTintColor: '#fff',
+              headerStyle: {
+                backgroundColor: '#002441',
+              }
+            }}
+          />
+          <Stack.Screen name="Profile" component={Profile}
+            options={{
+              headerShown: true,
+              headerTitle: 'Meu perfil',
               headerBackTitle: '',
               headerTintColor: '#fff',
               headerStyle: {

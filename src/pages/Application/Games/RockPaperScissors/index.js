@@ -39,12 +39,26 @@ import { useSelector } from 'react-redux';
 import api from '../../../../services/api';
 import { ActivityIndicator } from 'react-native-paper';
 
+import { useBackHandler } from '@react-native-community/hooks';
+
 let socket = io('http://192.168.2.177:3333');
+
+let round = 1;
+let pointsPlayer = 0;
+let pointsRival = 0;
+let result = '';
 
 const RockPaperScissors = ({ route, navigation }) => {
   const user = useSelector((state) => state.user.profile);
 
   const data = route.params.data;
+
+  useBackHandler(() => {
+    if (true) {
+      return true;
+    }
+    return false;
+  });
 
   const animationRock = useSharedValue(0);
   const animationPaper = useSharedValue(0);
@@ -53,7 +67,7 @@ const RockPaperScissors = ({ route, navigation }) => {
   const animationScissorsX = useSharedValue(0);
 
   // rock or paper or scissors
-  const [round, setRound] = useState(1);
+ // const [round, setRound] = useState(1);
   const [roundOne, setRoundOne] = useState('#fff');
   const [roundTwo, setRoundTwo] = useState('#fff');
   const [roundTree, setRoundTree] = useState('#fff');
@@ -62,16 +76,12 @@ const RockPaperScissors = ({ route, navigation }) => {
   const [moveRival, setMoveRival] = useState(null);
 
   const [confirm, setConfirm] = useState(false);
-  const [confirmRival, setConfirmRival] = useState(true);
+  const [confirmRival, setConfirmRival] = useState(false);
 
   const [playerOk, setPlayerOk] = useState(false);
 
   const [finished, setFinished] = useState(false);
   const [finishedAll, setFinishedAll] = useState(false);
-  const [result, setResult] = useState('');
-
-  const [pointsPlayer, setPointsPlayer] = useState(0);
-  const [pointsRival, setPointsRival] = useState(0);
 
   const [loadingMove, setLoadingMove] = useState(false);
 
@@ -91,6 +101,10 @@ const RockPaperScissors = ({ route, navigation }) => {
   });
 
   function handleAnimationPositionRock() {
+    if (confirm === true) {
+      return;
+    }
+
     animationScissorsX.value = 0;
     animationScissors.value = 0;
     animationPaper.value = 0;
@@ -116,6 +130,10 @@ const RockPaperScissors = ({ route, navigation }) => {
   });
 
   function handleAnimationPositionPaper() {
+    if (confirm === true) {
+      return;
+    }
+
     animationScissorsX.value = 0;
     animationScissors.value = 0;
     animationRock.value = 0;
@@ -146,6 +164,10 @@ const RockPaperScissors = ({ route, navigation }) => {
   });
 
   function handleAnimationPositionScissors() {
+    if (confirm === true) {
+      return;
+    }
+
     animationPaper.value = 0;
     animationPaperX.value = 0;
     animationRock.value = 0;
@@ -200,28 +222,25 @@ const RockPaperScissors = ({ route, navigation }) => {
 
   function handleContinuePlay() {
     setPlayerOk(true);
-    setRound(round < 3 && round + 1);
-    setMove(null);
-    setMoveRival(null);
+   // setRound(oldState => oldState + 1);
+   round = round + 1;
 
-    if (round === 3) {
+    if (round > 3) {
       processFinishedPlay();
+    } else {
+      emptyScrenn();
     }
 
-    emptyScrenn();
   }
 
-  function processFinishedPlay() {
-    if (pointsPlayer > pointsRival) {
-      Alert.alert('Você ganhou a partida!');
-    } else if (pointsRival > pointsPlayer) {
-      Alert.alert('Você perdeu a partida!');
-    } else if (pointsRival === pointsPlayer) {
-      Alert.alert('Houve um empate!');
-    }
 
+  function processFinishedPlay() {
     setFinishedAll(true);
-    navigation.navigate('FinishedPlay', {data});
+    round = 1;
+    pointsPlayer = 0;
+    pointsRival = 0;
+    navigation.navigate('FinishedPlay', {data, result});
+    result = '';
   }
 
   function emptyScrenn() {
@@ -232,6 +251,7 @@ const RockPaperScissors = ({ route, navigation }) => {
     animationPaperX.value = 0;
 
     setMove(null);
+    setMoveRival(null);
     setConfirm(false);
     setFinished(false);
   }
@@ -239,37 +259,37 @@ const RockPaperScissors = ({ route, navigation }) => {
   function processWinner(move, moveRival) {
     setLoadingProcess(true);
     if (move === 'rock' && moveRival === 'paper') {
-      setResult('Winner player 2');
-      setPointsRival(pointsRival + 1);
+      result = 'Você perdeu';
+      pointsRival = pointsRival + 1;
       processRound(2);
     } else if (move === 'paper' && moveRival === 'rock') {
-      setResult('Winner player 1');
-      setPointsPlayer(pointsPlayer + 1);
+      result = 'Você ganhou';
+      pointsPlayer = pointsPlayer + 1;
       processRound(1);
     } else if (move === 'rock' && moveRival === 'scissors') {
-      setResult('Winner player 1');
-      setPointsPlayer(pointsPlayer + 1);
+      result = 'Você ganhou';
+      pointsPlayer = pointsPlayer + 1;
       processRound(1);
     } else if (move === 'scissors' && moveRival === 'rock') {
-      setResult('Winner player 2');
-      setPointsRival(pointsRival + 1);
+      result = 'Você perdeu';
+      pointsRival = pointsRival + 1;
       processRound(2);
     } else if (move === 'paper' && moveRival === 'scissors') {
-      setResult('Winner player 2');
-      setPointsRival(pointsRival + 1);
+      result = 'Você perdeu';
+      pointsRival = pointsRival + 1;
       processRound(2);
     } else if (move === 'scissors' && moveRival === 'paper') {
-      setResult('Winner player 1');
-      setPointsPlayer(pointsPlayer + 1);
+      result = 'Você ganhou';
+      pointsPlayer = pointsPlayer + 1;
       processRound(1);
     } else if (move === 'rock' && moveRival === 'rock') {
-      setResult('Draw');
+      result = 'Empate';
       processRound(0);
     } else if (move === 'paper' && moveRival === 'paper') {
-      setResult('Draw');
+      result = 'Empate';
       processRound(0);
     } else if (move === 'scissors' && moveRival === 'scissors') {
-      setResult('Draw');
+      result = 'Empate';
       processRound(0);
     }
   }
@@ -346,7 +366,7 @@ const RockPaperScissors = ({ route, navigation }) => {
 
   useEffect(() => {
 
-  }, [loadingProcess]);
+  }, [loadingProcess, round]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -374,22 +394,26 @@ const RockPaperScissors = ({ route, navigation }) => {
 
             <ContainerBorderMove move={moveRival}>
               <Move onPress={() => {}}>
-                {moveRival === null ? (
-                  <></> //COLOCAR UMA IMAGEM PARA REPRESENTAR A CARTA
+                {confirm === false && moveRival !== null ? (
+                  <TitleMove>OK!</TitleMove>
                 ) : (
                   <>
-                    {moveRival === 0 && <TitleMove>Pedra</TitleMove>}
-                    {moveRival === 1 && <TitleMove>Papel</TitleMove>}
-                    {moveRival === 2 && <TitleMove>Tesoura</TitleMove>}
+                    {confirm === true && confirmRival === true && moveRival !== null && (
+                      <>
+                        {moveRival === 'rock' && <TitleMove>Pedra</TitleMove>}
+                        {moveRival === 'paper' && <TitleMove>Papel</TitleMove>}
+                        {moveRival === 'scissors' && <TitleMove>Tesoura</TitleMove>}
 
-                    {moveRival === 0 && (
-                      <ImageMove source={rockIcon}></ImageMove>
-                    )}
-                    {moveRival === 1 && (
-                      <ImageMove source={paperIcon}></ImageMove>
-                    )}
-                    {moveRival === 2 && (
-                      <ImageMove source={scissorsIcon}></ImageMove>
+                        {moveRival === 'rock' && (
+                          <ImageMove source={rockIcon}></ImageMove>
+                        )}
+                        {moveRival === 'paper' && (
+                          <ImageMove source={paperIcon}></ImageMove>
+                        )}
+                        {moveRival === 'scissors' && (
+                          <ImageMove source={scissorsIcon}></ImageMove>
+                        )}
+                      </>
                     )}
                   </>
                 )}
