@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {ScrollView } from 'react-native';
+import {Alert, ScrollView } from 'react-native';
 
 import { Container, Title, ContainerDataPlayer, Text, ContainerForgotPassword } from './styles';
 
@@ -12,6 +12,8 @@ import Line from '../../../../components/Line';
 
 import {TextInput, Button} from 'react-native-paper'
 
+import api from '../../../../services/api';
+
 const Profile = () => {
   const user = useSelector((state) => state.user.profile);
 
@@ -21,7 +23,7 @@ const Profile = () => {
     dispatch(signOut());
   }
 
-  const [loading, setLoading] = useState(false);
+  const [loadingPass, setLoadingPass] = useState(false);
 
   const [oldPassword, setOldPassword] = useState('');
   const [password, setPassword] = useState('');
@@ -63,6 +65,62 @@ const Profile = () => {
       setIconNewPassword('eye-off');
     } else {
       setIconNewPassword('eye');
+    }
+  }
+
+  function handleValidatePassword() {
+    if (password !== newPassword) {
+      Alert.alert('As senhas não coincidem');
+      return;
+    }
+
+    if (password !== '' && password.length < 8) {
+      Alert.alert('Senha muito curta, digite uma senha de no minimo 8 caracteres');
+      return;
+    }
+
+    validHardPassword();
+  }
+
+  function validHardPassword() {
+    if (/[A-Z]/.test(password) === false) {
+      Alert.alert('Digite pelo menos uma letra maiscula');
+      return;
+    }
+
+    if (/[0-9]/.test(password) === false) {
+      Alert.alert('Digite pelo menos um número');
+      return;
+    }
+
+    if (/\W|_/.test(password) === false) {
+      Alert.alert('Digite pelo menos um caracter especial');
+      return;
+    }
+
+    alterPassword();
+
+  }
+
+  async function alterPassword() {
+    setLoadingPass(true);
+    try {
+      await api.put('alter-password', {
+        player: user.id,
+        old_password: oldPassword,
+        password_hash: newPassword,
+      })
+      setLoadingPass(false);
+
+      Alert.alert('Senha alterada com sucesso!');
+
+      setPassword('');
+      setNewPassword('');
+      setOldPassword('');
+
+    } catch (error) {
+      Alert.alert('Erro ao alterar sua senha, ou senha antiga inválida');
+      setLoadingPass(false);
     }
   }
 
@@ -130,7 +188,7 @@ const Profile = () => {
               }}
             />
 
-            <Button icon="send" mode="contained" onPress={() => {}} color="#002441" loading={loading}>
+            <Button icon="send" mode="contained" onPress={handleValidatePassword} color="#002441" loading={loadingPass}>
               Alterar Senha
             </Button>
         </ContainerForgotPassword>

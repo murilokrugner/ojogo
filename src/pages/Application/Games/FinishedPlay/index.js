@@ -1,29 +1,22 @@
 import React, {useState, useEffect} from 'react';
-import { Alert, SafeAreaView } from 'react-native';
-
+import { ActivityIndicator, Alert, SafeAreaView } from 'react-native';
 import { Container, ContainerWinner, Winner, ContainerCash, Cash, ContainerShowAnimation } from './styles';
-
 import {useSelector} from 'react-redux';
-
 import LottieView from 'lottie-react-native';
-
 import Coins from '../../../../assets/animations/coins.json';
 import ShowCoins from '../../../../assets/animations/show-coins.json';
-
 import {Button} from 'react-native-paper';
-
 import { useBackHandler } from '@react-native-community/hooks';
-
 import api from '../../../../services/api';
+
+let winner;
+let type;
 
 const FinishedPlay = ({route, navigation}) => {
   const user = useSelector((state) => state.user.profile);
-
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
-
-  const room = route.params.data;
-
+  const [data, setData] = useState();
+  const room = route.params;
   const result = route.params.result;
 
   useBackHandler(() => {
@@ -40,15 +33,46 @@ const FinishedPlay = ({route, navigation}) => {
     navigation.goBack();
   }
 
+  function processWinner(rival) {
+    if (result === 'Você ganhou') {
+      winner = user.id;
+      type = 1;
+    } else if (result === 'Empate') {
+      winner = null;
+      type = 2;
+    } else if (result === 'Você perdeu') {
+      type = 0;
+      winner = rival;
+    }
+  }
+
   async function dataRoom() {
     try {
-      const response = await api.get(`room-information?id=${room.id}`);
+      const response = await api.get(`room-information-finished?id=${room.id}`);
 
       setData(response.data[0]);
+      verifyPlayers(response.data[0])
+    } catch (error) {
 
-      setLoading(false);
+    }
+  }
 
-      saveHistory(response.data[0]);
+  async function verifyPlayers(data) {
+    let rival;
+    try {
+      if (user.id !== data.player_punter.id) {
+        rival = data.player_punter.id;
+      } else if (user.id !== data.player_owner.id) {
+        rival = data.player_owner.id;
+      }
+
+      processWinner(rival);
+
+      if (user.id === data.player_owner.id) {
+        saveHistory(data);
+      } else {
+        saveMovements(data);
+      }
 
     } catch (error) {
 
@@ -56,11 +80,12 @@ const FinishedPlay = ({route, navigation}) => {
   }
 
   async function saveHistory(data) {
+
     try {
       await api.post('history', {
         owner: data.player_owner.id,
         punter: data.player_punter.id,
-        winner: result === 'Você ganhou' ? user.id :  data.player_punter.id !== user.id ?  data.player_punter.id :  data.player_owner.id,
+        winner: winner,
         room: data.id,
         value: data.gamesvalues.value,
       });
@@ -75,7 +100,7 @@ const FinishedPlay = ({route, navigation}) => {
       const response = await api.post('movements', {
         player: user.id,
         value: data.gamesvalues.value,
-        winner: result === 'Você ganhou' ? 1 : 0,
+        type: type,
       });
 
       saveWallet(response.data);
@@ -90,8 +115,10 @@ const FinishedPlay = ({route, navigation}) => {
         id: user.id,
         balance: balance,
       });
-    } catch (error) {
 
+      setLoading(false);
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -101,9 +128,14 @@ const FinishedPlay = ({route, navigation}) => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-        <Container>
-          {!loading && (
-              <ContainerWinner>
+        {loading ? (
+          <Container>
+            <ActivityIndicator color="#000" size="small" />
+          </Container>
+        ) : (
+          <>
+          <Container>
+            <ContainerWinner>
               <Winner>{result}</Winner>
               <ContainerCash>
               {result !== 'Empate' && (
@@ -133,30 +165,30 @@ const FinishedPlay = ({route, navigation}) => {
                 Continuar
               </Button>
             </ContainerWinner>
-          )}
-        </Container>
-        <ContainerShowAnimation>
-          <LottieView
-            source={ShowCoins}
-            autoPlay
-            loop={true}
-            style={{ width: 100, height: 300 }}
-          />
-          <LottieView
-            source={ShowCoins}
-            autoPlay
-            loop={true}
-            style={{ width: 100, height: 300 }}
-          />
-          <LottieView
-            source={ShowCoins}
-            autoPlay
-            loop={true}
-            style={{ width: 100, height: 300 }}
-          />
-        </ContainerShowAnimation>
+            </Container>
+            <ContainerShowAnimation>
+              <LottieView
+                source={ShowCoins}
+                autoPlay
+                loop={true}
+                style={{ width: 100, height: 300 }}
+              />
+              <LottieView
+                source={ShowCoins}
+                autoPlay
+                loop={true}
+                style={{ width: 100, height: 300 }}
+              />
+              <LottieView
+                source={ShowCoins}
+                autoPlay
+                loop={true}
+                style={{ width: 100, height: 300 }}
+              />
+            </ContainerShowAnimation>
+          </>
+        )}
     </SafeAreaView>
-
   );
 }
 

@@ -23,7 +23,7 @@ import api from '../../../../../services/api';
 
 import io from 'socket.io-client';
 
-let socket = io('http://192.168.2.108:3333');
+let socket = io('http://192.168.2.177:3333');
 
 const RoomWaiting = ({ route, navigation }) => {
   var sendStatus;
@@ -164,7 +164,7 @@ const RoomWaiting = ({ route, navigation }) => {
             <Line />
 
             <Player>
-              {punter !== null && (
+              {punter !== null && punter.length !== 0 && punter !== undefined && (
                 <>
                   <Nickname>
                     {punter[0].player_punter &&

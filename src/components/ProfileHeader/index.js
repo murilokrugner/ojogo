@@ -9,7 +9,11 @@ import { useSelector } from 'react-redux';
 
 import api from '../../services/api';
 
+import { useIsFocused } from '@react-navigation/native';
+
 const ProfileHeader = ({title, image, screen}) => {
+  const isFocused = useIsFocused();
+
   const user = useSelector((state) => state.user.profile);
   const [loading, setLoading] = useState(true);
   const [balance, setBalance] = useState(0);
@@ -25,16 +29,15 @@ const ProfileHeader = ({title, image, screen}) => {
 
       setLoading(false);
     } catch (error) {
-      Alert.alert('Erro ao carregar dados...')
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    if (user) {
+    if (user || isFocused) {
       loadBalance();
     }
-  }, [user]);
+  }, [user, isFocused]);
 
   return (
     <Container>

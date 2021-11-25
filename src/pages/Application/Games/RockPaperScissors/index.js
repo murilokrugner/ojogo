@@ -41,7 +41,7 @@ import { ActivityIndicator } from 'react-native-paper';
 
 import { useBackHandler } from '@react-native-community/hooks';
 
-let socket = io('http://192.168.2.108:3333');
+let socket = io('http://192.168.2.177:3333');
 
 let round = 1;
 let pointsPlayer = 0;
@@ -67,13 +67,13 @@ const RockPaperScissors = ({ route, navigation }) => {
   const animationScissorsX = useSharedValue(0);
 
   // rock or paper or scissors
-  // const [round, setRound] = useState(1);
   const [roundOne, setRoundOne] = useState('#fff');
   const [roundTwo, setRoundTwo] = useState('#fff');
   const [roundTree, setRoundTree] = useState('#fff');
 
   const [move, setMove] = useState(null);
   const [moveRival, setMoveRival] = useState(null);
+  const [rivalRound, setRivalRound] = useState(null);
 
   const [confirm, setConfirm] = useState(false);
   const [confirmRival, setConfirmRival] = useState(false);
@@ -221,7 +221,6 @@ const RockPaperScissors = ({ route, navigation }) => {
 
   function handleContinuePlay() {
     setPlayerOk(true);
-    // setRound(oldState => oldState + 1);
     round = round + 1;
 
     if (round > 3) {
@@ -233,10 +232,20 @@ const RockPaperScissors = ({ route, navigation }) => {
 
   function processFinishedPlay() {
     setFinishedAll(true);
+
+    if (pointsPlayer > pointsRival) {
+      result = 'Você ganhou';
+    } else if (pointsPlayer === pointsRival) {
+      result = 'Empate';
+    } else if (pointsPlayer < pointsRival) {
+      result = 'Você perdeu';
+    }
+
     round = 1;
     pointsPlayer = 0;
     pointsRival = 0;
-    navigation.navigate('FinishedPlay', { data, result });
+    let id = data.id;
+    navigation.navigate('FinishedPlay', {id, result});
     result = '';
   }
 
@@ -292,6 +301,7 @@ const RockPaperScissors = ({ route, navigation }) => {
   }
 
   function confirmMove() {
+    setPlayerOk(false);
     if (move !== null) {
       setConfirm(true);
       sendMove();
@@ -319,14 +329,19 @@ const RockPaperScissors = ({ route, navigation }) => {
 
   async function verifyMove(inf) {
     try {
-      setFinished(false);
-
       const me = inf.filter((item) => item.player_id === user.id);
       const rival = inf.filter((item) => item.player_id !== user.id);
 
       if (rival[0]) {
         setConfirmRival(true);
         setMoveRival(rival[0].move);
+
+        if (rival[0].round !== round) {
+          setRivalRound(true);
+        } else {
+          setRivalRound(false);
+        }
+
       }
 
       if (me[0]) {
@@ -393,29 +408,35 @@ const RockPaperScissors = ({ route, navigation }) => {
                   <TitleMove>OK!</TitleMove>
                 ) : (
                   <>
-                    {confirm === true &&
-                      confirmRival === true &&
-                      moveRival !== null && (
-                        <>
-                          {moveRival === 'rock' && <TitleMove>Pedra</TitleMove>}
-                          {moveRival === 'paper' && (
-                            <TitleMove>Papel</TitleMove>
-                          )}
-                          {moveRival === 'scissors' && (
-                            <TitleMove>Tesoura</TitleMove>
-                          )}
+                    {rivalRound ? (
+                      <TitleMove>OK!</TitleMove>
+                    ) : (
+                      <>
+                      {confirm === true &&
+                        confirmRival === true &&
+                        moveRival !== null && (
+                          <>
+                            {moveRival === 'rock' && <TitleMove>Pedra</TitleMove>}
+                            {moveRival === 'paper' && (
+                              <TitleMove>Papel</TitleMove>
+                            )}
+                            {moveRival === 'scissors' && (
+                              <TitleMove>Tesoura</TitleMove>
+                            )}
 
-                          {moveRival === 'rock' && (
-                            <ImageMove source={rockIcon}></ImageMove>
-                          )}
-                          {moveRival === 'paper' && (
-                            <ImageMove source={paperIcon}></ImageMove>
-                          )}
-                          {moveRival === 'scissors' && (
-                            <ImageMove source={scissorsIcon}></ImageMove>
-                          )}
-                        </>
-                      )}
+                            {moveRival === 'rock' && (
+                              <ImageMove source={rockIcon}></ImageMove>
+                            )}
+                            {moveRival === 'paper' && (
+                              <ImageMove source={paperIcon}></ImageMove>
+                            )}
+                            {moveRival === 'scissors' && (
+                              <ImageMove source={scissorsIcon}></ImageMove>
+                            )}
+                          </>
+                        )}
+                    </>
+                    )}
                   </>
                 )}
               </Move>

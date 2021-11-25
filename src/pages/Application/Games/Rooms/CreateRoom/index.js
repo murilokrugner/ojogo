@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Alert } from 'react-native';
 
 import { Container, ContainerPicker, TitlePicker } from './styles';
@@ -20,19 +20,44 @@ const CreateRoom = ({navigation}) => {
 
   const [selectedValue, setSelectedValue] = useState('5');
 
+  const [balance, setBalance] = useState();
+
   function handleValidateForm() {
     if (name === '') {
       setColorName('#E31F0B');
       return; 
     } else {
       setColorName('#002441');
-      createNewRoom();
+      verifyBalance();
     }
   };
+
+  function verifyBalance() {
+    if (balance < parseInt(selectedValue) || balance === 0) {
+      Alert.alert('Você não possui saldo suficiente');
+      return;
+    } else {
+      createNewRoom();
+    }
+  }
 
   async function createNewRoom() {
     try {
       setLoading(true);
+
+      let value;
+
+      if (selectedValue === '5') {
+        value = 1;
+      } else if (selectedValue === '10') {
+        value = 2;
+      } else if (selectedValue === '20') {
+        value = 3;
+      } else if (selectedValue === '50') {
+        value = 4;
+      } else if (selectedValue === '100') {
+        value = 5;
+      }
 
       const response = await api.post('rooms', {
         name: name.toUpperCase(),
@@ -40,7 +65,7 @@ const CreateRoom = ({navigation}) => {
         player_id_owner: user.id,
         player_id_punter: null,
         player_id_winner: null,
-        gamesvalues_id: 1,
+        gamesvalues_id: value,
         finished: false
       });
 
@@ -63,11 +88,26 @@ const CreateRoom = ({navigation}) => {
     }
   }
 
+  async function loadBalance() {
+    try {
+      const response = await api.get(`wallet?id=${user.id}`);
+
+      setBalance(response.data.balance);
+
+    } catch (error) {
+      Alert.alert('Erro ao carregar dados...');
+    }
+  }
+
   async function handleSubmit(data) {
     setLoading(false);
 
     navigation.navigate('RoomWaiting', {data});
   }
+
+  useEffect(() => {
+    loadBalance();
+  }, []);
 
   return (
     <Container>
@@ -96,11 +136,11 @@ const CreateRoom = ({navigation}) => {
           onValueChange={(itemValue, itemIndex) =>
             setSelectedValue(itemValue)
           }>
-          <Picker.Item label="5 moedas" value="5"  key="5" style={{color: '#000', backgroundColor: '#fff'}}/>
-          <Picker.Item label="10 moedas" value="10" key="10" style={{color: '#000', backgroundColor: '#fff'}}/>
-          <Picker.Item label="20 moedas" value="20" key="20" style={{color: '#000', backgroundColor: '#fff'}}/>
-          <Picker.Item label="50 moedas" value="50" key="50" style={{color: '#000', backgroundColor: '#fff'}}/>
-          <Picker.Item label="100 moedas" value="100" key="100" style={{color: '#000', backgroundColor: '#fff'}}/>
+          <Picker.Item label="5 moedas" value="5"  key="1" style={{color: '#000', backgroundColor: '#fff'}}/>
+          <Picker.Item label="10 moedas" value="10" key="2" style={{color: '#000', backgroundColor: '#fff'}}/>
+          <Picker.Item label="20 moedas" value="20" key="3" style={{color: '#000', backgroundColor: '#fff'}}/>
+          <Picker.Item label="50 moedas" value="50" key="4" style={{color: '#000', backgroundColor: '#fff'}}/>
+          <Picker.Item label="100 moedas" value="100" key="5" style={{color: '#000', backgroundColor: '#fff'}}/>
         </Picker>
       </ContainerPicker>
 

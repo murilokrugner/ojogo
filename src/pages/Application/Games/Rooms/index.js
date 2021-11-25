@@ -20,7 +20,7 @@ import loadingIcon from '../../../../assets/animations/loading.json';
 
 import { useSelector } from 'react-redux';
 
-let socket = io('http://192.168.2.108:3333');
+let socket = io('http://192.168.2.177:3333');
 
 import { useIsFocused } from '@react-navigation/native';
 
@@ -31,6 +31,18 @@ const Rooms = ({ navigation }) => {
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(false);
+
+  const [balance, setBalance] = useState();
+
+  async function loadBalance() {
+    try {
+      const response = await api.get(`wallet?id=${user.id}`);
+
+      setBalance(response.data.balance);
+
+    } catch (error) {
+    }
+  }
 
   async function loadRooms() {
     try {
@@ -52,6 +64,11 @@ const Rooms = ({ navigation }) => {
   }
 
   async function entryRoom(item) {
+    if (balance < item.gamesvalues.value || balance === 0) {
+      Alert.alert('Você não possui saldo suficiente');
+      return;
+    }
+
     Alert.alert(
       'Entrar na sala?',
       `${item.player_owner.nickname} valendo ${item.gamesvalues.value} moedas?`,
@@ -102,7 +119,10 @@ const Rooms = ({ navigation }) => {
 
   useEffect(() => {
     loadRooms();
-  }, [isFocused]);
+    if (user) {
+      loadBalance();
+    }
+  }, [user, isFocused]);
 
   return (
     <>
