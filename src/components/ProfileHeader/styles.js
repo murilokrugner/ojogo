@@ -9,6 +9,19 @@ export const Container = styled.View`
   align-items: center;
 `;
 
+export const Balance = styled.Text`
+  color: #fff;
+  font-size: 14px;
+`;
+
+export const ContainerUser = styled.View`
+  flex-direction: row;
+  width: 210px;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  align-items: center;
+`;
+
 export const TitleScreen = styled.Text`
   color: #fff;
   font-weight: bold;

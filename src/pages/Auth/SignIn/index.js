@@ -3,7 +3,7 @@ import { ScrollView } from 'react-native';
 
 import { TextInput, Button } from 'react-native-paper';
 
-import { Container, Logo } from './styles';
+import { Container, Logo, ButtonForgotPassword, TextForgotPassword } from './styles';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { signInRequest } from '../../../store/modules/auth/actions';
@@ -48,7 +48,7 @@ const SignIn = ({navigation}) => {
                   colors: {
                       placeholder: '#002441', text: '#002441', primary: '#002441',
                   }
-              }}
+                }}
               />
           <Button mode="contained" onPress={handleSubmit} color="#002441" loading={loading}>
             Entrar
@@ -57,6 +57,10 @@ const SignIn = ({navigation}) => {
           <Button mode="contained" onPress={() => {navigation.navigate('SignUp')}} color="#000" >
             Criar conta
           </Button>
+
+          <ButtonForgotPassword onPress={() => {navigation.navigate('ForgotPassword')}}>
+            <TextForgotPassword>Esqueci a senha</TextForgotPassword>
+          </ButtonForgotPassword>
 
       </Container>
     </ScrollView>

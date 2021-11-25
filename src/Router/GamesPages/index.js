@@ -17,7 +17,7 @@ import ProfileHeader from '../../components/ProfileHeader';
 
 import Profile from '../../pages/Application/User/Profile';
 
-import eu from '../../assets/eu.jpeg';
+import eu from '../../assets/eu.png';
 
 export default function Games() {
     return (

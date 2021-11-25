@@ -49,7 +49,9 @@ const CreateRoom = ({navigation}) => {
       const data = {
         id: response.data.id,
         name: name,
-        value: selectedValue,
+        gamesvalues: {
+          value: selectedValue,
+        }
       }
 
       handleSubmit(data);

@@ -41,7 +41,7 @@ import { ActivityIndicator } from 'react-native-paper';
 
 import { useBackHandler } from '@react-native-community/hooks';
 
-let socket = io('http://192.168.2.177:3333');
+let socket = io('http://192.168.2.108:3333');
 
 let round = 1;
 let pointsPlayer = 0;
@@ -67,7 +67,7 @@ const RockPaperScissors = ({ route, navigation }) => {
   const animationScissorsX = useSharedValue(0);
 
   // rock or paper or scissors
- // const [round, setRound] = useState(1);
+  // const [round, setRound] = useState(1);
   const [roundOne, setRoundOne] = useState('#fff');
   const [roundTwo, setRoundTwo] = useState('#fff');
   const [roundTree, setRoundTree] = useState('#fff');
@@ -217,29 +217,26 @@ const RockPaperScissors = ({ route, navigation }) => {
 
     setFinished(true);
     setLoadingProcess(false);
-
   }
 
   function handleContinuePlay() {
     setPlayerOk(true);
-   // setRound(oldState => oldState + 1);
-   round = round + 1;
+    // setRound(oldState => oldState + 1);
+    round = round + 1;
 
     if (round > 3) {
       processFinishedPlay();
     } else {
       emptyScrenn();
     }
-
   }
-
 
   function processFinishedPlay() {
     setFinishedAll(true);
     round = 1;
     pointsPlayer = 0;
     pointsRival = 0;
-    navigation.navigate('FinishedPlay', {data, result});
+    navigation.navigate('FinishedPlay', { data, result });
     result = '';
   }
 
@@ -324,8 +321,8 @@ const RockPaperScissors = ({ route, navigation }) => {
     try {
       setFinished(false);
 
-      const me = inf.filter(item => item.player_id === user.id);
-      const rival = inf.filter(item => item.player_id !== user.id);
+      const me = inf.filter((item) => item.player_id === user.id);
+      const rival = inf.filter((item) => item.player_id !== user.id);
 
       if (rival[0]) {
         setConfirmRival(true);
@@ -360,13 +357,11 @@ const RockPaperScissors = ({ route, navigation }) => {
 
   useEffect(() => {
     socket.on(`plays-${data.id}`, (inf) => {
-      verifyMove(inf)
+      verifyMove(inf);
     });
   }, []);
 
-  useEffect(() => {
-
-  }, [loadingProcess, round]);
+  useEffect(() => {}, [loadingProcess, round]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -398,23 +393,29 @@ const RockPaperScissors = ({ route, navigation }) => {
                   <TitleMove>OK!</TitleMove>
                 ) : (
                   <>
-                    {confirm === true && confirmRival === true && moveRival !== null && (
-                      <>
-                        {moveRival === 'rock' && <TitleMove>Pedra</TitleMove>}
-                        {moveRival === 'paper' && <TitleMove>Papel</TitleMove>}
-                        {moveRival === 'scissors' && <TitleMove>Tesoura</TitleMove>}
+                    {confirm === true &&
+                      confirmRival === true &&
+                      moveRival !== null && (
+                        <>
+                          {moveRival === 'rock' && <TitleMove>Pedra</TitleMove>}
+                          {moveRival === 'paper' && (
+                            <TitleMove>Papel</TitleMove>
+                          )}
+                          {moveRival === 'scissors' && (
+                            <TitleMove>Tesoura</TitleMove>
+                          )}
 
-                        {moveRival === 'rock' && (
-                          <ImageMove source={rockIcon}></ImageMove>
-                        )}
-                        {moveRival === 'paper' && (
-                          <ImageMove source={paperIcon}></ImageMove>
-                        )}
-                        {moveRival === 'scissors' && (
-                          <ImageMove source={scissorsIcon}></ImageMove>
-                        )}
-                      </>
-                    )}
+                          {moveRival === 'rock' && (
+                            <ImageMove source={rockIcon}></ImageMove>
+                          )}
+                          {moveRival === 'paper' && (
+                            <ImageMove source={paperIcon}></ImageMove>
+                          )}
+                          {moveRival === 'scissors' && (
+                            <ImageMove source={scissorsIcon}></ImageMove>
+                          )}
+                        </>
+                      )}
                   </>
                 )}
               </Move>

@@ -20,21 +20,12 @@ import loadingIcon from '../../../../assets/animations/loading.json';
 
 import { useSelector } from 'react-redux';
 
-import { useDispatch } from 'react-redux';
-import { signOut } from '../../../../store/modules/auth/actions';
-
-let socket = io('http://192.168.2.177:3333');
+let socket = io('http://192.168.2.108:3333');
 
 import { useIsFocused } from '@react-navigation/native';
 
 const Rooms = ({ navigation }) => {
   const isFocused = useIsFocused();
-
-  const dispatch = useDispatch();
-
-  async function handleSignOut() {
-    dispatch(signOut());
-  }
 
   const user = useSelector((state) => state.user.profile);
 
@@ -151,7 +142,6 @@ const Rooms = ({ navigation }) => {
                 )}
                 keyExtractor={(item) => item.id}
               />
-              <Button title="SAIR" onPress={handleSignOut} />
             </Container>
           )}
         </>
@@ -178,7 +168,7 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 40,
-    backgroundColor: '#00325a'
+    backgroundColor: '#00325a',
   },
 });
 

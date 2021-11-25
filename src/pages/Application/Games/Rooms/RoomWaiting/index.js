@@ -23,7 +23,7 @@ import api from '../../../../../services/api';
 
 import io from 'socket.io-client';
 
-let socket = io('http://192.168.2.177:3333');
+let socket = io('http://192.168.2.108:3333');
 
 const RoomWaiting = ({ route, navigation }) => {
   var sendStatus;
@@ -144,7 +144,7 @@ const RoomWaiting = ({ route, navigation }) => {
         <Container>
           <ContainerInfoRoom>
             <Name>Nome da sala: {data.name}</Name>
-            <Value>Aposta: {data.value} moedas</Value>
+            <Value>Aposta: {data.gamesvalues.value} moedas</Value>
           </ContainerInfoRoom>
 
           <Line top={20} />
