@@ -3,10 +3,12 @@ import { ScrollView } from 'react-native';
 
 import { TextInput, Button } from 'react-native-paper';
 
-import { Container, Logo, ButtonForgotPassword, TextForgotPassword } from './styles';
+import { Container, ContainerLogo, Logo, ButtonForgotPassword, TextForgotPassword } from './styles';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { signInRequest } from '../../../store/modules/auth/actions';
+
+import jogoImage from '../../../assets/jogo.png';
 
 const SignIn = ({navigation}) => {
   const dispatch = useDispatch();
@@ -22,7 +24,9 @@ const SignIn = ({navigation}) => {
   return (
     <ScrollView style={{flex: 1}}>
       <Container>
-        <Logo>O JOGO </Logo>
+        <ContainerLogo>
+          <Logo source={jogoImage}/>
+        </ContainerLogo>
         <TextInput
                 label="E-mail"
                 value={email}
@@ -59,7 +63,7 @@ const SignIn = ({navigation}) => {
           </Button>
 
           <ButtonForgotPassword onPress={() => {navigation.navigate('ForgotPassword')}}>
-            <TextForgotPassword>Esqueci a senha</TextForgotPassword>
+            <TextForgotPassword>Esqueci a senha :(</TextForgotPassword>
           </ButtonForgotPassword>
 
       </Container>
