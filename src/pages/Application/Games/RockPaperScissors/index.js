@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, SafeAreaView, Button } from 'react-native';
+import { Alert, SafeAreaView, Button, Dimensions } from 'react-native';
 import {
   Container,
   ContainerSelect,
@@ -21,6 +21,7 @@ import {
   TextVs,
   TitleStatus,
   ContainerBorderMove,
+  ContainerAds
 } from './styles';
 import Animated, {
   useSharedValue,
@@ -41,12 +42,18 @@ import { ActivityIndicator } from 'react-native-paper';
 
 import { useBackHandler } from '@react-native-community/hooks';
 
-let socket = io('http://192.168.2.177:3333');
+import {
+  AdMobBanner,
+} from 'react-native-admob'
+
+let socket = io('http://192.168.2.108:3333');
 
 let round = 1;
 let pointsPlayer = 0;
 let pointsRival = 0;
 let result = '';
+
+const windowHeight = Dimensions.get('window').height;
 
 const RockPaperScissors = ({ route, navigation }) => {
   const user = useSelector((state) => state.user.profile);
@@ -111,7 +118,7 @@ const RockPaperScissors = ({ route, navigation }) => {
     animationPaperX.value = 0;
 
     if (animationRock.value === 0) {
-      animationRock.value = -500;
+      animationRock.value = (windowHeight.toFixed(0) - 265) * -1
       setMove('rock');
     } else {
       animationRock.value = 0;
@@ -139,7 +146,7 @@ const RockPaperScissors = ({ route, navigation }) => {
     animationRock.value = 0;
 
     if (animationPaper.value === 0) {
-      animationPaper.value = -500;
+      animationPaper.value = (windowHeight.toFixed(0) - 265) * -1
       setMove('paper');
     } else {
       animationPaper.value = 0;
@@ -173,7 +180,7 @@ const RockPaperScissors = ({ route, navigation }) => {
     animationRock.value = 0;
 
     if (animationScissors.value === 0) {
-      animationScissors.value = -500;
+      animationScissors.value = (windowHeight.toFixed(0) - 265) * -1
       setMove('scissors');
     } else {
       animationScissors.value = 0;
@@ -496,6 +503,14 @@ const RockPaperScissors = ({ route, navigation }) => {
           </SelectMove>
         </ContainerSelect>
       </Container>
+
+      <ContainerAds>
+        <AdMobBanner
+            style={{marginBottom: 10, marginTop: 5}}
+            adSize="banner"
+            adUnitID="ca-app-pub-3940256099942544/6300978111"
+          />
+      </ContainerAds>
     </SafeAreaView>
   );
 };

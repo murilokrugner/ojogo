@@ -23,7 +23,11 @@ import api from '../../../../../services/api';
 
 import io from 'socket.io-client';
 
-let socket = io('http://192.168.2.177:3333');
+let socket = io('http://192.168.2.108:3333');
+
+import {
+  AdMobBanner,
+} from 'react-native-admob'
 
 const RoomWaiting = ({ route, navigation }) => {
   var sendStatus;
@@ -197,6 +201,12 @@ const RoomWaiting = ({ route, navigation }) => {
           >
             CANCELAR SALA
           </Button>
+
+          <AdMobBanner
+             style={{marginTop: 30}}
+             adSize="banner"
+             adUnitID="ca-app-pub-3940256099942544/6300978111"
+          />
         </Container>
       ) : (
         <ActivityIndicator color="#000" size="large" />

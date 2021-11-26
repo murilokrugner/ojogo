@@ -8,6 +8,7 @@ import {
   TitleRoom,
   Value,
   Owner,
+  ContainerAds
 } from './styles';
 
 import { FAB } from 'react-native-paper';
@@ -20,9 +21,13 @@ import loadingIcon from '../../../../assets/animations/loading.json';
 
 import { useSelector } from 'react-redux';
 
-let socket = io('http://192.168.2.177:3333');
+let socket = io('http://192.168.2.108:3333');
 
 import { useIsFocused } from '@react-navigation/native';
+
+import {
+  AdMobBanner,
+} from 'react-native-admob'
 
 const Rooms = ({ navigation }) => {
   const isFocused = useIsFocused();
@@ -90,6 +95,10 @@ const Rooms = ({ navigation }) => {
     );
   }
 
+  async function deleteRooms() {
+    await api.delete(`delete-room?player=${user.id}`);
+  }
+
   async function handleSubmit(item) {
     try {
       await api.put('entry-room', {
@@ -121,6 +130,7 @@ const Rooms = ({ navigation }) => {
     loadRooms();
     if (user) {
       loadBalance();
+      deleteRooms();
     }
   }, [user, isFocused]);
 
@@ -161,7 +171,13 @@ const Rooms = ({ navigation }) => {
                   </ContainerRooms>
                 )}
                 keyExtractor={(item) => item.id}
-              />
+              />    
+                <ContainerAds>
+                  <AdMobBanner
+                      adSize="banner"
+                      adUnitID="ca-app-pub-3940256099942544/6300978111"
+                    />
+                </ContainerAds>          
             </Container>
           )}
         </>
@@ -177,7 +193,8 @@ const Rooms = ({ navigation }) => {
         onPress={() => {
           navigation.navigate('CreateRoom');
         }}
-      />
+      />        
+      
     </>
   );
 };
@@ -187,7 +204,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     margin: 16,
     right: 0,
-    bottom: 40,
+    bottom: 70,
     backgroundColor: '#00325a',
   },
 });

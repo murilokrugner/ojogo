@@ -56,3 +56,8 @@ export const Owner = styled.Text`
 
   color: #000;
 `;
+
+
+export const ContainerAds = styled.View`
+
+`;

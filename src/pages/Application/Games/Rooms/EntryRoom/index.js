@@ -25,9 +25,13 @@ import NetInfo from '../../../../../functions/NetInfo';
 
 import io from 'socket.io-client';
 
-let socket = io('http://192.168.2.177:3333');
+let socket = io('http://192.168.2.108:3333');
 
 import { useSelector } from 'react-redux';
+
+import {
+  AdMobBanner,
+} from 'react-native-admob'
 
 const EntryRoom = ({ route, navigation }) => {
   const user = useSelector((state) => state.user.profile);
@@ -192,6 +196,12 @@ const EntryRoom = ({ route, navigation }) => {
           >
             SAIR DA SALA
           </Button>
+
+          <AdMobBanner
+            style={{marginTop: 30}}
+            adSize="banner"
+            adUnitID="ca-app-pub-3940256099942544/6300978111"
+          />
         </Container>
       )}
     </ScrollView>

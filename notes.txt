@@ -1,0 +1,2 @@
+implementation 'com.google.android.gms:play-services-ads:19.8.0' ---- adicionar no admob e no proprio projeto
+

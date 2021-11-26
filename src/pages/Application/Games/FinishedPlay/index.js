@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { ActivityIndicator, Alert, SafeAreaView } from 'react-native';
-import { Container, ContainerWinner, Winner, ContainerCash, Cash, ContainerShowAnimation } from './styles';
+import { Container, ContainerWinner, Winner, ContainerCash, Cash, ContainerShowAnimation, ContainerAds } from './styles';
 import {useSelector} from 'react-redux';
 import LottieView from 'lottie-react-native';
 import Coins from '../../../../assets/animations/coins.json';
@@ -8,6 +8,11 @@ import ShowCoins from '../../../../assets/animations/show-coins.json';
 import {Button} from 'react-native-paper';
 import { useBackHandler } from '@react-native-community/hooks';
 import api from '../../../../services/api';
+
+import {
+  AdMobBanner,
+  AdMobRewarded
+} from 'react-native-admob'
 
 let winner;
 let type;
@@ -57,6 +62,14 @@ const FinishedPlay = ({route, navigation}) => {
     }
   }
 
+  async function finishedRoom() {
+    try {
+      await api.put(`delete-room?room=${room.id}`)
+    } catch (error) {
+      
+    }
+  }
+
   async function verifyPlayers(data) {
     let rival;
     try {
@@ -69,6 +82,7 @@ const FinishedPlay = ({route, navigation}) => {
       processWinner(rival);
 
       if (user.id === data.player_owner.id) {
+        finishedRoom();
         saveHistory(data);
       } else {
         saveMovements(data);
@@ -124,6 +138,9 @@ const FinishedPlay = ({route, navigation}) => {
 
   useEffect(() => {
     dataRoom();
+
+    AdMobRewarded.setAdUnitID('ca-app-pub-3940256099942544/5224354917');
+    AdMobRewarded.requestAd().then(() => AdMobRewarded.showAd());
   }, []);
 
   return (
@@ -135,6 +152,13 @@ const FinishedPlay = ({route, navigation}) => {
         ) : (
           <>
           <Container>
+            <ContainerAds>
+              <AdMobBanner
+                style={{marginBottom: 10, marginTop: 5}}
+                adSize="banner"
+                adUnitID="ca-app-pub-3940256099942544/6300978111"
+              />
+            </ContainerAds>
             <ContainerWinner>
               <Winner>{result}</Winner>
               <ContainerCash>

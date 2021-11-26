@@ -18,6 +18,7 @@ target 'ojogo' do
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   pod 'React-RCTText', :path => '../node_modules/react-native/Libraries/Text', :modular_headers => true
 
+  pod 'react-native-admob', path: '../node_modules/react-native-admob'
 
   target 'ojogoTests' do
     inherit! :complete

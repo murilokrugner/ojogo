@@ -3,9 +3,10 @@ import styled from 'styled-components/native';
 export const Container = styled.View`
   padding: 20px;
   width: auto;
-  height: 500px;
+  height: 580px;
   flex-direction: column;
   justify-content: space-between;
+  
 `;
 
 export const ContainerPicker = styled.View`

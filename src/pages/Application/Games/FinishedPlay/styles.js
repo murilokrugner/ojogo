@@ -49,3 +49,8 @@ export const ContainerShowAnimation = styled.View`
   position: absolute;
   top: ${(windowHeight - 250).toFixed(0)+'px'};
 `;
+
+export const ContainerAds = styled.View`
+  align-items: center;
+  margin-top: 20px;
+`;

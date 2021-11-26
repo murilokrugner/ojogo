@@ -10,6 +10,10 @@ import api from '../../../../../services/api';
 
 import {useSelector} from 'react-redux';
 
+import {
+  AdMobBanner,
+} from 'react-native-admob'
+
 const CreateRoom = ({navigation}) => {
   const user = useSelector(state => state.user.profile);
 
@@ -147,6 +151,11 @@ const CreateRoom = ({navigation}) => {
       <Button mode="contained" onPress={handleValidateForm} color="#002441" loading={loading}>
         Criar sala
       </Button>
+
+      <AdMobBanner
+        adSize="banner"
+        adUnitID="ca-app-pub-3940256099942544/6300978111"
+      />
     </Container>
   );
 }
