@@ -42,3 +42,7 @@ export const ContainerForgotPassword = styled.View`
 
   justify-content: space-between;
   `;
+
+export const ContainerButtonWatch = styled.View`
+  padding: 20px;
+`;

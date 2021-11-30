@@ -46,7 +46,7 @@ import {
   AdMobBanner,
 } from 'react-native-admob'
 
-let socket = io('http://192.168.2.108:3333');
+let socket = io('http://knowledgesoftware.kinghost.net:21022');
 
 let round = 1;
 let pointsPlayer = 0;
@@ -508,7 +508,7 @@ const RockPaperScissors = ({ route, navigation }) => {
         <AdMobBanner
             style={{marginBottom: 10, marginTop: 5}}
             adSize="banner"
-            adUnitID="ca-app-pub-3940256099942544/6300978111"
+            adUnitID="ca-app-pub-4499612911905101/1108175371"
           />
       </ContainerAds>
     </SafeAreaView>

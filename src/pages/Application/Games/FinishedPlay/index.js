@@ -139,7 +139,7 @@ const FinishedPlay = ({route, navigation}) => {
   useEffect(() => {
     dataRoom();
 
-    AdMobRewarded.setAdUnitID('ca-app-pub-3940256099942544/5224354917');
+   // AdMobRewarded.setAdUnitID('ca-app-pub-4499612911905101/2968886109');
     AdMobRewarded.requestAd().then(() => AdMobRewarded.showAd());
   }, []);
 
@@ -156,7 +156,7 @@ const FinishedPlay = ({route, navigation}) => {
               <AdMobBanner
                 style={{marginBottom: 10, marginTop: 5}}
                 adSize="banner"
-                adUnitID="ca-app-pub-3940256099942544/6300978111"
+                adUnitID="ca-app-pub-4499612911905101/1108175371"
               />
             </ContainerAds>
             <ContainerWinner>

@@ -10,6 +10,7 @@ import CreateRoom from '../../pages/Application/Games/Rooms/CreateRoom';
 import RoomWaiting from '../../pages/Application/Games/Rooms/RoomWaiting';
 import EntryRoom from '../../pages/Application/Games/Rooms/EntryRoom';
 import FinishedPlay from '../../pages/Application/Games/FinishedPlay';
+import WatchVideo from '../../pages/Application/User/WatchVideo';
 
 const Stack = createStackNavigator();
 
@@ -104,6 +105,17 @@ export default function Games() {
             options={{
               headerShown: true,
               headerTitle: 'Meu perfil',
+              headerBackTitle: '',
+              headerTintColor: '#fff',
+              headerStyle: {
+                backgroundColor: '#002441',
+              }
+            }}
+          />
+          <Stack.Screen name="WatchVideo" component={WatchVideo}
+            options={{
+              headerShown: false,
+              headerTitle: '',
               headerBackTitle: '',
               headerTintColor: '#fff',
               headerStyle: {

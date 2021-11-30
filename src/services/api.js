@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const url = 'http://192.168.2.108:3333/';
+const url = 'http://knowledgesoftware.kinghost.net:21022/';
 
 let headers = {
   'Content-Type': 'application/json',

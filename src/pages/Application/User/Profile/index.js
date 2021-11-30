@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Alert, ScrollView } from 'react-native';
 
-import { Container, Title, ContainerDataPlayer, Text, ContainerForgotPassword } from './styles';
+import { Container, Title, ContainerDataPlayer, Text, ContainerForgotPassword, ContainerButtonWatch } from './styles';
 
 import {useSelector} from 'react-redux';
 
@@ -14,7 +14,7 @@ import {TextInput, Button} from 'react-native-paper'
 
 import api from '../../../../services/api';
 
-const Profile = () => {
+const Profile = ({navigation}) => {
   const user = useSelector((state) => state.user.profile);
 
   const dispatch = useDispatch();
@@ -136,6 +136,16 @@ const Profile = () => {
 
         <Line bottom={0} top={20} />
 
+        <Title>Ganhe moedas! </Title>
+
+        <ContainerButtonWatch>
+          <Button mode="contained" onPress={() => {navigation.navigate('WatchVideo')}} color="#000" >
+                  Assista videos para ganhar moedas
+          </Button>
+        </ContainerButtonWatch>
+
+        <Line bottom={0} top={20} />
+
         <Title>Alterar senha: </Title>
 
         <ContainerForgotPassword>
@@ -187,6 +197,7 @@ const Profile = () => {
                 }
               }}
             />
+            
 
             <Button icon="send" mode="contained" onPress={handleValidatePassword} color="#002441" loading={loadingPass}>
               Alterar Senha

@@ -23,7 +23,7 @@ import api from '../../../../../services/api';
 
 import io from 'socket.io-client';
 
-let socket = io('http://192.168.2.108:3333');
+let socket = io('http://knowledgesoftware.kinghost.net:21022');
 
 import {
   AdMobBanner,
@@ -205,7 +205,7 @@ const RoomWaiting = ({ route, navigation }) => {
           <AdMobBanner
              style={{marginTop: 30}}
              adSize="banner"
-             adUnitID="ca-app-pub-3940256099942544/6300978111"
+             adUnitID="ca-app-pub-4499612911905101/1108175371"
           />
         </Container>
       ) : (

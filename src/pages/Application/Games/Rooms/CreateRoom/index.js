@@ -154,7 +154,7 @@ const CreateRoom = ({navigation}) => {
 
       <AdMobBanner
         adSize="banner"
-        adUnitID="ca-app-pub-3940256099942544/6300978111"
+        adUnitID="ca-app-pub-4499612911905101/1108175371"
       />
     </Container>
   );

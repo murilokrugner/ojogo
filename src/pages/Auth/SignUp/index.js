@@ -53,7 +53,7 @@ const SignUp = ({navigation}) => {
       name !== ''
       && nickname !== ''
       && email !== ''
-      && document !== ''
+      //&& document !== ''
       && password !== ''
       && confirmPass !== ''
     )
@@ -116,7 +116,7 @@ const SignUp = ({navigation}) => {
         name,
         nickname: nick,
         email,
-        document,
+      //  document,
         password_hash: password,
       });
 
@@ -176,6 +176,8 @@ const SignUp = ({navigation}) => {
                 }
             }}
             />
+           
+            {/**
             <TextInput
                   label="CPF"
                   value={document}
@@ -183,17 +185,18 @@ const SignUp = ({navigation}) => {
                   onChangeText={text => setDocument(text)}
                   mode={"outlined"}
                   render={props =>
-                      <TextInputMask
-                        {...props}
-                        mask={'[000].[000].[000]-[00]'}
-                      />
-                    }
-                  theme={{
-                  colors: {
-                      placeholder: colorDocument, text: colorDocument, primary: colorDocument,
+                    <TextInputMask
+                    {...props}
+                    mask={'[000].[000].[000]-[00]'}
+                    />
                   }
-              }}
-              />
+                  theme={{
+                    colors: {
+                      placeholder: colorDocument, text: colorDocument, primary: colorDocument,
+                    }
+                  }}
+                  /> 
+              */}
             <TextInput
               label="Senha"
               value={password}
@@ -221,7 +224,7 @@ const SignUp = ({navigation}) => {
             }}
             />
 
-              <Button mode="contained" onPress={validDocument} color="#002441" loading={loading}>
+              <Button mode="contained" onPress={handleValidateForm} color="#002441" loading={loading}>
                   Criar conta
               </Button>
       </Container>
