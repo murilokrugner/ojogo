@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView } from 'react-native';
 
 import { TextInput, Button } from 'react-native-paper';
 
@@ -22,52 +22,54 @@ const SignIn = ({navigation}) => {
   }
 
   return (
-    <ScrollView style={{flex: 1}}>
-      <Container>
-        <ContainerLogo>
-          <Logo source={jogoImage}/>
-        </ContainerLogo>
-        <TextInput
-                label="E-mail"
-                value={email}
-                onChangeText={text => setEmail(text)}
-                mode={"outlined"}
-                keyboardType={'email-address'}
-                returnKeyType={'next'}
-                autoCapitalize='none'
-                theme={{
-                  colors: {
-                      placeholder: '#002441', text: '#002441', primary: '#002441',
-                  }
-              }}
-              />
-              <TextInput
-                label="Senha"
-                value={password}
-                onChangeText={text => setPassword(text)}
-                secureTextEntry={true}
-                mode={"outlined"}
-                returnKeyType={'next'}
-                theme={{
-                  colors: {
-                      placeholder: '#002441', text: '#002441', primary: '#002441',
-                  }
+    <SafeAreaView style={{flex: 1}}>
+        <ScrollView style={{flex: 1}}>
+        <Container>
+          <ContainerLogo>
+            <Logo source={jogoImage}/>
+          </ContainerLogo>
+          <TextInput
+                  label="E-mail"
+                  value={email}
+                  onChangeText={text => setEmail(text)}
+                  mode={"outlined"}
+                  keyboardType={'email-address'}
+                  returnKeyType={'next'}
+                  autoCapitalize='none'
+                  theme={{
+                    colors: {
+                        placeholder: '#002441', text: '#002441', primary: '#002441',
+                    }
                 }}
-              />
-          <Button mode="contained" onPress={handleSubmit} color="#002441" loading={loading}>
-            Entrar
-          </Button>
+                />
+                <TextInput
+                  label="Senha"
+                  value={password}
+                  onChangeText={text => setPassword(text)}
+                  secureTextEntry={true}
+                  mode={"outlined"}
+                  returnKeyType={'next'}
+                  theme={{
+                    colors: {
+                        placeholder: '#002441', text: '#002441', primary: '#002441',
+                    }
+                  }}
+                />
+            <Button mode="contained" onPress={handleSubmit} color="#002441" loading={loading}>
+              Entrar
+            </Button>
 
-          <Button mode="contained" onPress={() => {navigation.navigate('SignUp')}} color="#000" >
-            Criar conta
-          </Button>
+            <Button mode="contained" onPress={() => {navigation.navigate('SignUp')}} color="#000" >
+              Criar conta
+            </Button>
 
-          <ButtonForgotPassword onPress={() => {navigation.navigate('ForgotPassword')}}>
-            <TextForgotPassword>Esqueci a senha :(</TextForgotPassword>
-          </ButtonForgotPassword>
+            <ButtonForgotPassword onPress={() => {navigation.navigate('ForgotPassword')}}>
+              <TextForgotPassword>Esqueci a senha :(</TextForgotPassword>
+            </ButtonForgotPassword>
 
-      </Container>
-    </ScrollView>
+        </Container>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

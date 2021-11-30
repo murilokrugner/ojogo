@@ -20,10 +20,10 @@ export const Container = styled.View`
 `;
 
 export const ContainerRooms = styled.TouchableOpacity`
-  width: 350px;
+  width: 320px;
   height: 120px;
 
-  border: 0.5px;
+  border: 1px;
   border-radius: 20px;
 
   margin-bottom: 30px;

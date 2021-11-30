@@ -3,7 +3,8 @@ import styled from 'styled-components/native';
 export const Container = styled.View`
   padding: 20px;
   width: auto;
-  height: 650px;
+  height: 580px;
+  max-height: 620px;
   flex-direction: column;
   justify-content: space-between;
 `;

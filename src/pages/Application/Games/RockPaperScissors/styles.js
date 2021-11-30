@@ -13,7 +13,6 @@ export const Container = styled.View`
 export const ContainerSelect = styled.View`
   padding: 20px;
   width: 100%;
-
 `;
 
 export const SelectMove = styled.View`
@@ -131,7 +130,7 @@ export const ContainerGame = styled.View`
   align-items: center;
   height: 200px;
 
-  
+
 
 `;
 
@@ -169,8 +168,8 @@ export const ContainerBorderMove = styled.View`
   padding: 50px;
 
   width: 90px;
-  
-  
+
+
 `;
 
 export const ContainerAds = styled.View`

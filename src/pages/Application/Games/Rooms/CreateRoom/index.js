@@ -86,7 +86,12 @@ const CreateRoom = ({navigation}) => {
       handleSubmit(data);
 
     } catch (error) {
-      Alert.alert('Não foi possível criar a sala, tente novamente mais tarde!');
+      if (error.response.data === 'Word not accept') {
+        Alert.alert('Palavra proibida');
+        setColorName('#E31F0B');
+      } else {
+        Alert.alert('Não foi possível criar a sala, tente novamente mais tarde!');
+      }
       setLoading(false);
 
     }

@@ -18,7 +18,7 @@ export const ContainerUser = styled.View`
   flex-direction: row;
   width: 210px;
   justify-content: space-around;
-  flex-wrap: wrap;
+
   align-items: center;
 `;
 

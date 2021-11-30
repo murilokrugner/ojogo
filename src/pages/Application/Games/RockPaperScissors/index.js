@@ -118,7 +118,7 @@ const RockPaperScissors = ({ route, navigation }) => {
     animationPaperX.value = 0;
 
     if (animationRock.value === 0) {
-      animationRock.value = (windowHeight.toFixed(0) - 265) * -1
+      animationRock.value = (windowHeight.toFixed(0) - 310) * -1
       setMove('rock');
     } else {
       animationRock.value = 0;
@@ -146,7 +146,7 @@ const RockPaperScissors = ({ route, navigation }) => {
     animationRock.value = 0;
 
     if (animationPaper.value === 0) {
-      animationPaper.value = (windowHeight.toFixed(0) - 265) * -1
+      animationPaper.value = (windowHeight.toFixed(0) - 310) * -1
       setMove('paper');
     } else {
       animationPaper.value = 0;
@@ -180,7 +180,7 @@ const RockPaperScissors = ({ route, navigation }) => {
     animationRock.value = 0;
 
     if (animationScissors.value === 0) {
-      animationScissors.value = (windowHeight.toFixed(0) - 265) * -1
+      animationScissors.value = (windowHeight.toFixed(0) - 310) * -1
       setMove('scissors');
     } else {
       animationScissors.value = 0;
@@ -479,7 +479,10 @@ const RockPaperScissors = ({ route, navigation }) => {
           style={{ width: 200, height: 200 }}
         />
 
-        <ContainerSelect>
+
+      </Container>
+
+      <ContainerSelect>
           <Line bottom={30} top={0} />
           <SelectMove>
             <Animated.View style={[animatedStylesRock]}>
@@ -502,7 +505,6 @@ const RockPaperScissors = ({ route, navigation }) => {
             </Animated.View>
           </SelectMove>
         </ContainerSelect>
-      </Container>
 
       <ContainerAds>
         <AdMobBanner
